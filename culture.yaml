@@ -1,0 +1,36 @@
+# culture.yaml
+# ─────────────────────────────────────────────────────────────
+# Organization-wide engineering principles — not project-specific,
+# not procedural (that's policies.yaml). This is what "good" looks
+# like here, meant to be read (not silently enforced) by Architect
+# and Developer prompts so every department works from the same
+# standards without AK re-explaining them each time.
+#
+# This is a first draft, seeded from what's already been established
+# across the project. It's AK's file to edit directly — nothing in
+# the OS writes to it automatically.
+# ─────────────────────────────────────────────────────────────
+
+engineering_principles:
+  - "Complete drop-in file replacements over partial diffs when a file needs real changes."
+  - "Short, direct code with inline comments over heavy abstraction or framework layers."
+  - "Prefer the standard library and a small number of well-known packages over adding new dependencies."
+  - "Every escalation-worthy failure surfaces to AK explicitly — never a narrative summary standing in for a real result."
+  - "A policy = a decision AK never wants to make twice. A feature only earns its place if it removes a repeated decision from the founder's day."
+
+preferred_stack:
+  backend: [Python, FastAPI]
+  frontend: [Next.js 15, TypeScript, Tailwind]
+  storage: [SQLite with WAL mode — for anything that doesn't yet need more]
+  llm_providers:
+    default: Groq (free tier)
+    escalation: Claude (paid — used deliberately, not by default)
+
+anti_patterns:
+  - "Adding a new framework or dependency to solve something 20 lines of stdlib code would solve."
+  - "A silent fallback that hides a failure instead of escalating it."
+  - "A policy or workflow that hardcodes a model name instead of a capability."
+  - "Self-reported confidence scores standing in for measured evidence."
+
+# Expand or correct this directly as real decisions get made — it's
+# meant to grow from lived project history, not be designed upfront.

@@ -1,0 +1,377 @@
+{
+  "schema_version": "1.0",
+  "project": "AK Labs OS",
+  "validation_version": "v0.3.0",
+  "run_id": "deterministic-adversarial",
+  "command": "adversarial",
+  "profile": "release",
+  "deterministic": true,
+  "overall_status": "PASS",
+  "exit_code": 0,
+  "version_recommendation": {
+    "current": "v0.4.1-alpha",
+    "suggested": "v0.4.1-alpha",
+    "readiness_score": 100,
+    "reason": "All required v0.4.1 release validation gates passed."
+  },
+  "definition_of_done": {
+    "status": "PASS",
+    "items": [
+      {
+        "id": "reviewer_adversarial_gate",
+        "description": "reviewer_adversarial suite must pass",
+        "required": true,
+        "status": "PASS",
+        "source_suite": "reviewer_adversarial",
+        "evidence_refs": []
+      }
+    ]
+  },
+  "environment": {
+    "python_version": "3.13.3",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "has_groq_key": true,
+    "has_anthropic_key": false,
+    "workspace": "C:\\Users\\ajagg\\.codex\\visualizations\\2026\\07\\19\\019f799d-596c-7253-a8f7-d6aeaab80b90\\harness_v041_adversarial_final"
+  },
+  "suites": [
+    {
+      "suite_id": "reviewer_adversarial",
+      "status": "PASS",
+      "required": true,
+      "started_at": null,
+      "duration_ms": 0,
+      "checks": [
+        {
+          "check_id": "plaintext_password",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "plaintext_password"
+            ],
+            "issues": [
+              {
+                "category": "plaintext_password",
+                "severity": "critical",
+                "message": "Plaintext password assigned to 'PASSWORD'.",
+                "line": 1
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "missing_auth",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "missing_authentication"
+            ],
+            "issues": [
+              {
+                "category": "missing_authentication",
+                "severity": "critical",
+                "message": "Credential-handling function 'login' does not perform a real authentication check.",
+                "line": 1
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "sql_inline_concat",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "sql_injection"
+            ],
+            "issues": [
+              {
+                "category": "sql_injection",
+                "severity": "critical",
+                "message": "SQL query is assembled dynamically before execution.",
+                "line": 2
+              },
+              {
+                "category": "sql_injection",
+                "severity": "critical",
+                "message": "SQL execution line appears to assemble query text dynamically.",
+                "line": 2
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "sql_variable_concat",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "sql_injection"
+            ],
+            "issues": [
+              {
+                "category": "sql_injection",
+                "severity": "critical",
+                "message": "SQL query is assembled dynamically before execution.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "sql_percent",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "sql_injection"
+            ],
+            "issues": [
+              {
+                "category": "sql_injection",
+                "severity": "critical",
+                "message": "SQL query is assembled dynamically before execution.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "sql_augassign",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "sql_injection"
+            ],
+            "issues": [
+              {
+                "category": "sql_injection",
+                "severity": "critical",
+                "message": "SQL query is assembled dynamically before execution.",
+                "line": 4
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "command_direct",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "command_execution"
+            ],
+            "issues": [
+              {
+                "category": "command_execution",
+                "severity": "critical",
+                "message": "Generated code executes commands through 'os.system'.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "command_alias",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "command_execution"
+            ],
+            "issues": [
+              {
+                "category": "command_execution",
+                "severity": "critical",
+                "message": "Generated code executes commands through 'subprocess.run'.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "os_popen",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "command_execution"
+            ],
+            "issues": [
+              {
+                "category": "command_execution",
+                "severity": "critical",
+                "message": "Generated code executes commands through 'os.popen'.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "dangerous_fs_direct",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "dangerous_filesystem_operation"
+            ],
+            "issues": [
+              {
+                "category": "dangerous_filesystem_operation",
+                "severity": "critical",
+                "message": "Generated code performs a destructive filesystem operation through 'shutil.rmtree'.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "dangerous_fs_alias",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "dangerous_filesystem_operation"
+            ],
+            "issues": [
+              {
+                "category": "dangerous_filesystem_operation",
+                "severity": "critical",
+                "message": "Generated code performs a destructive filesystem operation through 'shutil.rmtree'.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "path_unlink",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "dangerous_filesystem_operation"
+            ],
+            "issues": [
+              {
+                "category": "dangerous_filesystem_operation",
+                "severity": "critical",
+                "message": "Generated code performs a destructive filesystem operation through 'unlink'.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "protected_file_write",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "critical_architecture_violation"
+            ],
+            "issues": [
+              {
+                "category": "critical_architecture_violation",
+                "severity": "critical",
+                "message": "Generated code attempts to modify protected AK Labs OS file 'policies.yaml'.",
+                "line": 3
+              },
+              {
+                "category": "critical_architecture_violation",
+                "severity": "critical",
+                "message": "Generated code attempts to modify protected AK Labs OS files.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "protected_file_open_write",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "critical_architecture_violation"
+            ],
+            "issues": [
+              {
+                "category": "critical_architecture_violation",
+                "severity": "critical",
+                "message": "Generated code attempts to modify protected AK Labs OS file 'policies.yaml'.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "secure_parameterized",
+          "status": "PASS",
+          "expected": "Reviewer verdict PASS",
+          "actual": "PASS",
+          "evidence": {
+            "verdict": "PASS",
+            "categories": [],
+            "issues": []
+          },
+          "artifact_paths": []
+        }
+      ],
+      "artifacts": [],
+      "evidence": {},
+      "failures": [],
+      "warnings": []
+    }
+  ],
+  "artifacts": [],
+  "summary": {
+    "passed": 1,
+    "failed": 0,
+    "not_tested": 0,
+    "warnings": 0
+  }
+}

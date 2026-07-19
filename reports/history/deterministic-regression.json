@@ -1,0 +1,821 @@
+{
+  "schema_version": "1.0",
+  "project": "AK Labs OS",
+  "validation_version": "v0.3.0",
+  "run_id": "deterministic-regression",
+  "command": "regression",
+  "profile": "release",
+  "deterministic": true,
+  "overall_status": "PASS",
+  "exit_code": 0,
+  "version_recommendation": {
+    "current": "v0.4.1-alpha",
+    "suggested": "v0.4.1-alpha",
+    "readiness_score": 100,
+    "reason": "All required v0.4.1 release validation gates passed."
+  },
+  "definition_of_done": {
+    "status": "PASS",
+    "items": [
+      {
+        "id": "reviewer_regression_gate",
+        "description": "reviewer_regression suite must pass",
+        "required": true,
+        "status": "PASS",
+        "source_suite": "reviewer_regression",
+        "evidence_refs": []
+      },
+      {
+        "id": "architect_normalization_gate",
+        "description": "architect_normalization suite must pass",
+        "required": true,
+        "status": "PASS",
+        "source_suite": "architect_normalization",
+        "evidence_refs": []
+      },
+      {
+        "id": "retry_fallback_gate",
+        "description": "retry_fallback suite must pass",
+        "required": true,
+        "status": "PASS",
+        "source_suite": "retry_fallback",
+        "evidence_refs": []
+      },
+      {
+        "id": "historian_gate",
+        "description": "historian suite must pass",
+        "required": true,
+        "status": "PASS",
+        "source_suite": "historian",
+        "evidence_refs": []
+      },
+      {
+        "id": "utf8_artifacts_gate",
+        "description": "utf8_artifacts suite must pass",
+        "required": true,
+        "status": "PASS",
+        "source_suite": "utf8_artifacts",
+        "evidence_refs": []
+      },
+      {
+        "id": "verify_gating_gate",
+        "description": "verify_gating suite must pass",
+        "required": true,
+        "status": "PASS",
+        "source_suite": "verify_gating",
+        "evidence_refs": []
+      },
+      {
+        "id": "project_context_gate",
+        "description": "project_context suite must pass",
+        "required": true,
+        "status": "PASS",
+        "source_suite": "project_context",
+        "evidence_refs": []
+      },
+      {
+        "id": "work_orders_gate",
+        "description": "work_orders suite must pass",
+        "required": true,
+        "status": "PASS",
+        "source_suite": "work_orders",
+        "evidence_refs": [
+          "C:\\Users\\ajagg\\.codex\\visualizations\\2026\\07\\19\\019f799d-596c-7253-a8f7-d6aeaab80b90\\harness_v041_regression_final\\work_orders\\example_work_order.json"
+        ]
+      }
+    ]
+  },
+  "environment": {
+    "python_version": "3.13.3",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "has_groq_key": true,
+    "has_anthropic_key": false,
+    "workspace": "C:\\Users\\ajagg\\.codex\\visualizations\\2026\\07\\19\\019f799d-596c-7253-a8f7-d6aeaab80b90\\harness_v041_regression_final"
+  },
+  "suites": [
+    {
+      "suite_id": "reviewer_regression",
+      "status": "PASS",
+      "required": true,
+      "started_at": null,
+      "duration_ms": 0,
+      "checks": [
+        {
+          "check_id": "sql_variable_concat",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "sql_injection"
+            ],
+            "issues": [
+              {
+                "category": "sql_injection",
+                "severity": "critical",
+                "message": "SQL query is assembled dynamically before execution.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "sql_variable_percent",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "sql_injection"
+            ],
+            "issues": [
+              {
+                "category": "sql_injection",
+                "severity": "critical",
+                "message": "SQL query is assembled dynamically before execution.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "sql_augassign",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "sql_injection"
+            ],
+            "issues": [
+              {
+                "category": "sql_injection",
+                "severity": "critical",
+                "message": "SQL query is assembled dynamically before execution.",
+                "line": 4
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "command_from_import",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "command_execution"
+            ],
+            "issues": [
+              {
+                "category": "command_execution",
+                "severity": "critical",
+                "message": "Generated code executes commands through 'subprocess.run'.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "command_alias_shell",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "command_execution"
+            ],
+            "issues": [
+              {
+                "category": "command_execution",
+                "severity": "critical",
+                "message": "Generated code executes commands through 'subprocess.run'.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "os_popen",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "command_execution"
+            ],
+            "issues": [
+              {
+                "category": "command_execution",
+                "severity": "critical",
+                "message": "Generated code executes commands through 'os.popen'.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "dangerous_fs_from_import",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "dangerous_filesystem_operation"
+            ],
+            "issues": [
+              {
+                "category": "dangerous_filesystem_operation",
+                "severity": "critical",
+                "message": "Generated code performs a destructive filesystem operation through 'shutil.rmtree'.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "path_unlink",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "dangerous_filesystem_operation"
+            ],
+            "issues": [
+              {
+                "category": "dangerous_filesystem_operation",
+                "severity": "critical",
+                "message": "Generated code performs a destructive filesystem operation through 'unlink'.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "protected_file_variable",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "critical_architecture_violation"
+            ],
+            "issues": [
+              {
+                "category": "critical_architecture_violation",
+                "severity": "critical",
+                "message": "Generated code attempts to modify protected AK Labs OS file 'policies.yaml'.",
+                "line": 4
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "protected_path_open_write",
+          "status": "PASS",
+          "expected": "Reviewer verdict FAIL",
+          "actual": "FAIL",
+          "evidence": {
+            "verdict": "FAIL",
+            "categories": [
+              "critical_architecture_violation"
+            ],
+            "issues": [
+              {
+                "category": "critical_architecture_violation",
+                "severity": "critical",
+                "message": "Generated code attempts to modify protected AK Labs OS file 'policies.yaml'.",
+                "line": 3
+              }
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "protected_file_read_only",
+          "status": "PASS",
+          "expected": "Reviewer verdict PASS",
+          "actual": "PASS",
+          "evidence": {
+            "verdict": "PASS",
+            "categories": [],
+            "issues": []
+          },
+          "artifact_paths": []
+        }
+      ],
+      "artifacts": [],
+      "evidence": {},
+      "failures": [],
+      "warnings": []
+    },
+    {
+      "suite_id": "architect_normalization",
+      "status": "PASS",
+      "required": true,
+      "started_at": null,
+      "duration_ms": 0,
+      "checks": [
+        {
+          "check_id": "exact_json",
+          "status": "PASS",
+          "expected": "error=False, normalization_note=False",
+          "actual": "matched",
+          "evidence": {
+            "error": null,
+            "note": null,
+            "work_order": {
+              "title": "Valid",
+              "in_scope": [
+                "Do one thing"
+              ],
+              "out_of_scope": [
+                "Do not do another thing"
+              ],
+              "acceptance_criteria": [
+                "It works"
+              ]
+            }
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "fenced_json_normalized",
+          "status": "PASS",
+          "expected": "error=False, normalization_note=True",
+          "actual": "matched",
+          "evidence": {
+            "error": null,
+            "note": "raw response was wrapped in a markdown JSON fence",
+            "work_order": {
+              "title": "Valid",
+              "in_scope": [
+                "Do one thing"
+              ],
+              "out_of_scope": [
+                "Do not do another thing"
+              ],
+              "acceptance_criteria": [
+                "It works"
+              ]
+            }
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "think_wrapped_final_json",
+          "status": "PASS",
+          "expected": "error=False, normalization_note=True",
+          "actual": "matched",
+          "evidence": {
+            "error": null,
+            "note": "raw response was not a single JSON object: Expecting value: line 1 column 1 (char 0)",
+            "work_order": {
+              "title": "Valid",
+              "in_scope": [
+                "Do one thing"
+              ],
+              "out_of_scope": [
+                "Do not do another thing"
+              ],
+              "acceptance_criteria": [
+                "It works"
+              ]
+            }
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "extra_key_rejected",
+          "status": "PASS",
+          "expected": "error=True, normalization_note=False",
+          "actual": "matched",
+          "evidence": {
+            "error": "unexpected key(s): extra",
+            "note": null,
+            "work_order": {}
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "missing_key_rejected",
+          "status": "PASS",
+          "expected": "error=True, normalization_note=False",
+          "actual": "matched",
+          "evidence": {
+            "error": "missing required key(s): out_of_scope, acceptance_criteria",
+            "note": null,
+            "work_order": {}
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "invalid_list_rejected",
+          "status": "PASS",
+          "expected": "error=True, normalization_note=False",
+          "actual": "matched",
+          "evidence": {
+            "error": "in_scope must be a non-empty list",
+            "note": null,
+            "work_order": {}
+          },
+          "artifact_paths": []
+        }
+      ],
+      "artifacts": [],
+      "evidence": {},
+      "failures": [],
+      "warnings": []
+    },
+    {
+      "suite_id": "retry_fallback",
+      "status": "PASS",
+      "required": true,
+      "started_at": null,
+      "duration_ms": 0,
+      "checks": [
+        {
+          "check_id": "retry_once_then_valid",
+          "status": "PASS",
+          "expected": "One retry then valid work order",
+          "actual": "{'brief': {'title': 'Valid', 'in_scope': ['Do one thing'], 'out_of_scope': ['Do not do another thing'], 'acceptance_criteria': ['It works']}, 'decision': {'proceed': True, 'escalate': False, 'interrupt_level': 'none', 'reason': None, 'on_escalate': None}, 'used_fallback': False, 'invalid_logs': ['output\\\\architect_logs\\\\retry_then_valid_attempt_1_invalid_20260719T112330Z.json'], 'normalization_logs': [], 'validation_error': None}",
+          "evidence": {
+            "calls": 2,
+            "result": {
+              "brief": {
+                "title": "Valid",
+                "in_scope": [
+                  "Do one thing"
+                ],
+                "out_of_scope": [
+                  "Do not do another thing"
+                ],
+                "acceptance_criteria": [
+                  "It works"
+                ]
+              },
+              "decision": {
+                "proceed": true,
+                "escalate": false,
+                "interrupt_level": "none",
+                "reason": null,
+                "on_escalate": null
+              },
+              "used_fallback": false,
+              "invalid_logs": [
+                "output\\architect_logs\\retry_then_valid_attempt_1_invalid_20260719T112330Z.json"
+              ],
+              "normalization_logs": [],
+              "validation_error": null
+            }
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "fallback_after_two_invalid",
+          "status": "PASS",
+          "expected": "Two invalid responses produce logged fallback",
+          "actual": "{'brief': {'title': 'Fallback after invalid', 'in_scope': ['Implement exactly this request: Fallback after invalid'], 'out_of_scope': ['Anything not explicitly required by the feature request', 'External services, persistence, deployment, or UI unless explicitly requested'], 'acceptance_criteria': ['Generated artifact is written to disk', 'Generated artifact passes Reviewer', 'Generated artifact parses as valid Python', 'Implementation directly addresses: Fallback after invalid']}, 'decision': {'proceed': True, 'escalate': False, 'interrupt_level': 'none', 'reason': None, 'on_escalate': None}, 'used_fallback': True, 'invalid_logs': ['output\\\\architect_logs\\\\fallback_after_invalid_attempt_1_invalid_20260719T112330Z.json', 'output\\\\architect_logs\\\\fallback_after_invalid_attempt_2_invalid_20260719T112330Z.json'], 'normalization_logs': [], 'fallback_log': 'output\\\\architect_logs\\\\fallback_after_invalid_attempt_3_fallback_20260719T112330Z.json', 'validation_error': 'missing required key(s): out_of_scope, acceptance_criteria'}",
+          "evidence": {
+            "calls": 2,
+            "result": {
+              "brief": {
+                "title": "Fallback after invalid",
+                "in_scope": [
+                  "Implement exactly this request: Fallback after invalid"
+                ],
+                "out_of_scope": [
+                  "Anything not explicitly required by the feature request",
+                  "External services, persistence, deployment, or UI unless explicitly requested"
+                ],
+                "acceptance_criteria": [
+                  "Generated artifact is written to disk",
+                  "Generated artifact passes Reviewer",
+                  "Generated artifact parses as valid Python",
+                  "Implementation directly addresses: Fallback after invalid"
+                ]
+              },
+              "decision": {
+                "proceed": true,
+                "escalate": false,
+                "interrupt_level": "none",
+                "reason": null,
+                "on_escalate": null
+              },
+              "used_fallback": true,
+              "invalid_logs": [
+                "output\\architect_logs\\fallback_after_invalid_attempt_1_invalid_20260719T112330Z.json",
+                "output\\architect_logs\\fallback_after_invalid_attempt_2_invalid_20260719T112330Z.json"
+              ],
+              "normalization_logs": [],
+              "fallback_log": "output\\architect_logs\\fallback_after_invalid_attempt_3_fallback_20260719T112330Z.json",
+              "validation_error": "missing required key(s): out_of_scope, acceptance_criteria"
+            }
+          },
+          "artifact_paths": []
+        }
+      ],
+      "artifacts": [],
+      "evidence": {},
+      "failures": [],
+      "warnings": []
+    },
+    {
+      "suite_id": "historian",
+      "status": "PASS",
+      "required": true,
+      "started_at": null,
+      "duration_ms": 0,
+      "checks": [
+        {
+          "check_id": "review_persistence_utf8",
+          "status": "PASS",
+          "expected": "Historian persists review JSON with Unicode",
+          "actual": "('Historian \ud83d\ude80', 'FAIL', 1, 9, '{\"issues\": [{\"category\": \"utf8\", \"message\": \"emoji \\\\ud83d\\\\ude80\"}], \"risk\": 9, \"score\": 1, \"summary\": \"unicode \\\\ud83d\\\\ude80\", \"verdict\": \"FAIL\"}')",
+          "evidence": {},
+          "artifact_paths": []
+        }
+      ],
+      "artifacts": [],
+      "evidence": {},
+      "failures": [],
+      "warnings": []
+    },
+    {
+      "suite_id": "utf8_artifacts",
+      "status": "PASS",
+      "required": true,
+      "started_at": null,
+      "duration_ms": 0,
+      "checks": [
+        {
+          "check_id": "utf8_write_read_verify",
+          "status": "PASS",
+          "expected": "UTF-8 artifact writes, reads, and verifies",
+          "actual": "output\\utf8_rocket.py",
+          "evidence": {
+            "verify": {
+              "passed": true,
+              "decision": {
+                "proceed": true,
+                "escalate": false,
+                "interrupt_level": "none",
+                "reason": null,
+                "on_escalate": null
+              },
+              "facts": {
+                "output_empty": false,
+                "syntax_invalid": false,
+                "file_not_written": false
+              }
+            }
+          },
+          "artifact_paths": []
+        }
+      ],
+      "artifacts": [],
+      "evidence": {},
+      "failures": [],
+      "warnings": []
+    },
+    {
+      "suite_id": "verify_gating",
+      "status": "PASS",
+      "required": true,
+      "started_at": null,
+      "duration_ms": 0,
+      "checks": [
+        {
+          "check_id": "verify_not_called_after_reviewer_fail",
+          "status": "PASS",
+          "expected": "Verify is skipped after Reviewer FAIL",
+          "actual": "not called",
+          "evidence": {},
+          "artifact_paths": []
+        }
+      ],
+      "artifacts": [],
+      "evidence": {},
+      "failures": [],
+      "warnings": []
+    },
+    {
+      "suite_id": "project_context",
+      "status": "PASS",
+      "required": true,
+      "started_at": null,
+      "duration_ms": 0,
+      "checks": [
+        {
+          "check_id": "project_context_utf8_logging",
+          "status": "PASS",
+          "expected": "PROJECT_CONTEXT logs Unicode",
+          "actual": ":30+00:00] FAILED at reviewer: Verify gating reviewer fail - Reviewer blocked generated code with 2 blocking issue(s). -> output\\valid_review.md\n- [2026-07-19T11:23:30+00:00] PROJECT_CONTEXT unicode \ud83d\ude80",
+          "evidence": {},
+          "artifact_paths": []
+        }
+      ],
+      "artifacts": [],
+      "evidence": {},
+      "failures": [],
+      "warnings": []
+    },
+    {
+      "suite_id": "work_orders",
+      "status": "PASS",
+      "required": true,
+      "started_at": null,
+      "duration_ms": 0,
+      "checks": [
+        {
+          "check_id": "id_generation",
+          "status": "PASS",
+          "expected": "Sequential deterministic IDs",
+          "actual": "WO-000001, WO-000002, WO-000003",
+          "evidence": {},
+          "artifact_paths": []
+        },
+        {
+          "check_id": "schema_validation",
+          "status": "PASS",
+          "expected": "Valid Work Order passes schema validation",
+          "actual": "WO-000001",
+          "evidence": {},
+          "artifact_paths": []
+        },
+        {
+          "check_id": "json_serialization",
+          "status": "PASS",
+          "expected": "JSON serialization round-trips canonical schema",
+          "actual": "WO-000001",
+          "evidence": {},
+          "artifact_paths": []
+        },
+        {
+          "check_id": "lifecycle_transitions",
+          "status": "PASS",
+          "expected": "Valid deterministic lifecycle transitions complete",
+          "actual": "DRAFT -> APPROVED -> IN_PROGRESS -> READY_FOR_REVIEW -> READY_FOR_VALIDATION -> COMPLETED -> ARCHIVED",
+          "evidence": {},
+          "artifact_paths": []
+        },
+        {
+          "check_id": "invalid_transition_rejected",
+          "status": "PASS",
+          "expected": "Invalid lifecycle transitions are rejected",
+          "actual": "invalid lifecycle transition: DRAFT -> COMPLETED",
+          "evidence": {},
+          "artifact_paths": []
+        },
+        {
+          "check_id": "duplicate_id_rejected",
+          "status": "PASS",
+          "expected": "Duplicate Work Order IDs are rejected",
+          "actual": "duplicate work order id: WO-000001",
+          "evidence": {},
+          "artifact_paths": []
+        },
+        {
+          "check_id": "missing_title_rejected",
+          "status": "PASS",
+          "expected": "Missing title is rejected",
+          "actual": "title is required",
+          "evidence": {
+            "errors": [
+              "title is required"
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "missing_objective_rejected",
+          "status": "PASS",
+          "expected": "Missing objective is rejected",
+          "actual": "objective is required",
+          "evidence": {
+            "errors": [
+              "objective is required"
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "missing_acceptance_criteria_rejected",
+          "status": "PASS",
+          "expected": "Missing acceptance criteria are rejected",
+          "actual": "acceptance_criteria must contain at least one item",
+          "evidence": {
+            "errors": [
+              "acceptance_criteria must contain at least one item"
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "invalid_priority_rejected",
+          "status": "PASS",
+          "expected": "Invalid priority is rejected",
+          "actual": "priority is invalid",
+          "evidence": {
+            "errors": [
+              "priority is invalid"
+            ]
+          },
+          "artifact_paths": []
+        },
+        {
+          "check_id": "acceptance_criteria_structured",
+          "status": "PASS",
+          "expected": "Acceptance criteria are structured objects",
+          "actual": "[{\"description\": \"Work Order IDs are deterministic\", \"id\": \"AC-001\", \"mandatory\": true}, {\"description\": \"Invalid lifecycle transitions are rejected\", \"id\": \"AC-002\", \"mandatory\": true}]",
+          "evidence": {},
+          "artifact_paths": []
+        },
+        {
+          "check_id": "deliverables_supported",
+          "status": "PASS",
+          "expected": "Deliverables support created files, tests, documentation, and reports",
+          "actual": "created_file, documentation, report, test",
+          "evidence": {},
+          "artifact_paths": []
+        },
+        {
+          "check_id": "constraints_supported",
+          "status": "PASS",
+          "expected": "Multiple engineering constraints are preserved",
+          "actual": "[\"Do not introduce repository intelligence\", \"Preserve deterministic execution\", \"Do not make Work Orders mandatory in runtime yet\"]",
+          "evidence": {},
+          "artifact_paths": []
+        },
+        {
+          "check_id": "work_order_contract_supported",
+          "status": "PASS",
+          "expected": "Work Order contract contains inputs, outputs, preconditions, postconditions",
+          "actual": "{\"inputs\": [\"User request\", \"AK Labs OS policy and validation context\"], \"outputs\": [\"Canonical Work Order JSON\", \"Lifecycle history\"], \"postconditions\": [\"Every department can consume the same structured contract\"], \"preconditions\": [\"Architect has converted request into structured scope\"]}",
+          "evidence": {},
+          "artifact_paths": []
+        },
+        {
+          "check_id": "department_ownership_history",
+          "status": "PASS",
+          "expected": "Department ownership and history are preserved",
+          "actual": "[{\"changed_at\": \"2026-07-19T00:00:00+00:00\", \"changed_by\": \"Architect\", \"from_department\": null, \"owner\": \"Architect\", \"reason\": \"created\", \"to_department\": \"Architect\"}, {\"changed_at\": \"2026-07-19T00:00:00+00:00\", \"changed_by\": \"Architect\", \"from_department\": \"Architect\", \"owner\": \"Developer\", \"reason\": \"implementation handoff\", \"to_department\": \"Developer\"}, {\"changed_at\": \"2026-07-19T00:00:00+00:00\", \"changed_by\": \"Developer\", \"from_department\": \"Developer\", \"owner\": \"Reviewer\", \"reason\": \"ready for review\", \"to_department\": \"Reviewer\"}, {\"changed_at\": \"2026-07-19T00:00:00+00:00\", \"changed_by\": \"Reviewer\", \"from_department\": \"Reviewer\", \"owner\": \"Validator\", \"reason\": \"ready for validation\", \"to_department\": \"Validator\"}, {\"changed_at\": \"2026-07-19T00:00:00+00:00\", \"changed_by\": \"Validator\", \"from_department\": \"Validator\", \"owner\": \"Historian\", \"reason\": \"record lifecycle\", \"to_department\": \"Historian\"}]",
+          "evidence": {},
+          "artifact_paths": []
+        },
+        {
+          "check_id": "schema_versioning",
+          "status": "PASS",
+          "expected": "Schema version is present and YAML is reserved, not implemented",
+          "actual": "{\"contract\": {\"inputs\": \"list[str]\", \"outputs\": \"list[str]\", \"postconditions\": \"list[str]\", \"preconditions\": \"list[str]\"}, \"enums\": {\"deliverable_type\": [\"created_file\", \"modified_file\", \"documentation\", \"test\", \"report\"], \"department\": [\"Architect\", \"Developer\", \"Reviewer\", \"Validator\", \"Historian\"], \"estimated_complexity\": [\"XS\", \"S\", \"M\", \"L\", \"XL\"], \"priority\": [\"CRITICAL\", \"HIGH\", \"MEDIUM\", \"LOW\"], \"risk_level\": [\"LOW\", \"MEDIUM\", \"HIGH\", \"CRITICAL\"], \"status\": [\"DRAFT\", \"APPROVED\", \"IN_PROGRESS\", \"READY_FOR_REVIEW\", \"REVIEW_FAILED\", \"READY_FOR_VALIDATION\", \"VALIDATION_FAILED\", \"COMPLETED\", \"ARCHIVED\"]}, \"required\": [\"schema_version\", \"id\", \"title\", \"objective\", \"description\", \"priority\", \"status\", \"created_at\", \"created_by\", \"current_owner\", \"department\", \"repository\", \"constraints\", \"acceptance_criteria\", \"deliverables\", \"dependencies\", \"affected_components\", \"artifact_targets\", \"review_requirements\", \"validation_requirements\", \"risk_level\", \"estimated_complexity\", \"contract\", \"metadata\", \"status_history\", \"department_history\"], \"schema_version\": 1, \"serialization\": {\"json\": \"implemented\", \"yaml\": \"reserved for future support\"}}",
+          "evidence": {},
+          "artifact_paths": []
+        }
+      ],
+      "artifacts": [
+        {
+          "type": "example_work_order",
+          "path": "C:\\Users\\ajagg\\.codex\\visualizations\\2026\\07\\19\\019f799d-596c-7253-a8f7-d6aeaab80b90\\harness_v041_regression_final\\work_orders\\example_work_order.json",
+          "sha256": null,
+          "description": "Canonical Work Order JSON example"
+        }
+      ],
+      "evidence": {},
+      "failures": [],
+      "warnings": []
+    }
+  ],
+  "artifacts": [
+    {
+      "type": "example_work_order",
+      "path": "C:\\Users\\ajagg\\.codex\\visualizations\\2026\\07\\19\\019f799d-596c-7253-a8f7-d6aeaab80b90\\harness_v041_regression_final\\work_orders\\example_work_order.json",
+      "sha256": null,
+      "description": "Canonical Work Order JSON example"
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "not_tested": 0,
+    "warnings": 0
+  }
+}

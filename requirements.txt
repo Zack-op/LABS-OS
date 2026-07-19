@@ -1,0 +1,4 @@
+pyyaml==6.0.3
+python-dotenv==1.2.2
+groq==1.5.0
+# anthropic   # uncomment only when you wire in the coding_hard / review escalation path

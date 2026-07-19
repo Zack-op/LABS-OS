@@ -1,0 +1,141 @@
+# policies.yaml
+# ─────────────────────────────────────────────────────────────
+# A policy = a decision AK never wants to make twice.
+#
+# Every policy has TWO paths:
+#   1. the confident path   -> just do it
+#   2. the escalation path  -> stop, this needs AK
+#
+# interrupt_level says HOW MUCH it needs AK, once escalated:
+#   none      -> never escalates
+#   review    -> proceed with a fallback, but flag for AK to glance at later
+#   approval  -> stop, wait for AK, blocking
+#   emergency -> stop, wait for AK, blocking, highest-consequence action
+#
+# Models are never named directly here — see capabilities.yaml.
+# A policy names WHAT KIND of capability it needs; capability_router.py
+# decides which live model currently provides it.
+# ─────────────────────────────────────────────────────────────
+
+policies:
+
+  - id: create_feature_branch
+    trigger: on_feature_start
+    action: git.create_branch
+    params:
+      pattern: "feature/{feature_slug}"
+    stakes: reversible
+    review_cadence: permanent
+    interrupt_level: none
+    escalate_if: null
+    on_escalate: null
+    # Pure mechanics. Nothing about the world can make this wrong.
+
+  - id: scope_compile
+    trigger: on_feature_start
+    action: llm.scope_compile
+    stakes: reversible
+    review_cadence: permanent
+    interrupt_level: approval
+    escalate_if: "brief_empty_or_invalid"
+    on_escalate: "notify_ak(block=true)"
+    # If the Architect can't produce a bounded brief, nothing downstream
+    # is allowed to guess what "in scope" means.
+
+  - id: route_model_by_task
+    trigger: on_task_dispatch
+    action: model.select
+    params:
+      architecture: reasoning_medium
+      coding_routine: coding_fast
+      coding_hard: reasoning_high
+      review: reasoning_high
+      commit_message: summarization_cheap
+    stakes: reversible
+    review_cadence: quarterly
+    interrupt_level: review
+    # Note what changed: this used to escalate on "model_deprecated."
+    # It no longer can — deprecation is absorbed by capabilities.yaml
+    # before it ever reaches this policy. What's LEFT to escalate is
+    # a real structural break: a typo'd capability name, or the
+    # provider itself being down.
+    escalate_if: "capability_unresolvable OR provider_call_failed"
+    on_escalate: "notify_ak(block=false, fallback=default_model)"
+
+  - id: review_generated_code
+    trigger: on_code_generated
+    action: review.security_architecture
+    stakes: reversible
+    review_cadence: permanent
+    interrupt_level: approval
+    escalate_if: "review_failed"
+    on_escalate: "notify_ak(block=true)"
+    # Reviewer is a blocking department. If it finds a critical issue,
+    # verification is not allowed to run after it.
+
+  - id: filesystem_safety
+    trigger: on_artifact_write
+    action: artifact.safe_write
+    stakes: reversible
+    review_cadence: permanent
+    interrupt_level: approval
+    escalate_if: "filesystem_blocked"
+    on_escalate: "notify_ak(block=true)"
+    # Safe Artifact Writer owns project artifact mutation. Unsafe paths,
+    # protected files, workspace escapes, and duplicate collisions are
+    # blocked before any filesystem write occurs.
+
+  - id: verify_output
+    trigger: on_code_generated
+    action: verify.check
+    stakes: reversible
+    review_cadence: permanent
+    interrupt_level: approval
+    escalate_if: "syntax_invalid OR output_empty OR file_not_written"
+    on_escalate: "notify_ak(block=true)"
+    # The anti-fabrication gate. Zero files + a confident summary
+    # is exactly the failure this policy exists to catch.
+
+  - id: run_tests_on_commit
+    trigger: on_commit
+    action: test.run_suite
+    params:
+      test_runner: coding_fast
+    stakes: reversible
+    review_cadence: permanent
+    interrupt_level: approval
+    max_retries: 2
+    escalate_if: "tests_failed_after_retries OR result_unverifiable"
+    on_escalate: "notify_ak(block=true)"
+    # Not exercised by the MVP demo (no real test suite yet) — wire this
+    # to your actual pytest runner once orchestrator.py touches a real repo.
+
+  - id: deploy_staging
+    trigger: on_pr_merged
+    action: deploy.staging
+    stakes: reversible
+    review_cadence: permanent
+    interrupt_level: approval
+    escalate_if: "tests_failed OR build_failed"
+    on_escalate: "notify_ak(block=true)"
+
+  - id: deploy_production
+    trigger: on_manual_trigger
+    action: deploy.production
+    stakes: irreversible
+    review_cadence: permanent
+    interrupt_level: approval
+    escalate_if: "always"
+    on_escalate: "notify_ak(block=true, mode=approval_required)"
+
+  - id: schema_migration
+    trigger: on_migration_detected
+    action: db.apply_migration
+    stakes: irreversible
+    review_cadence: permanent
+    interrupt_level: emergency
+    escalate_if: "always"
+    on_escalate: "notify_ak(block=true, mode=approval_required)"
+    # Your AgencyOS "website_url NOT NULL" call was exactly this shape:
+    # looked like a forgettable detail, turned out to gate your
+    # highest-scoring lead segment. Highest interrupt level, always.

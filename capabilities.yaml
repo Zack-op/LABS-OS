@@ -1,0 +1,38 @@
+# capabilities.yaml
+# ─────────────────────────────────────────────────────────────
+# The ONLY file that should change when a model gets deprecated,
+# upgraded, or swapped. Policies name a capability, never a model.
+#
+# Groq deprecating llama-3.3-70b-versatile mid-project is exactly
+# the event this file exists to absorb — a one-line edit here,
+# zero edits in policies.yaml, zero founder interrupt.
+# ─────────────────────────────────────────────────────────────
+
+capabilities:
+
+  reasoning_high:
+    provider: claude
+    model: claude-sonnet-5
+    # Escalation-tier reasoning. Costs real money — see llm_router.py.
+
+  reasoning_medium:
+    provider: groq
+    model: qwen/qwen3.6-27b
+    # Best reasoning currently free on Groq. When this gets deprecated,
+    # this is the only line in the whole repo that needs to change —
+    # proved it live: swap this line, policies.yaml stays untouched,
+    # pipeline keeps running.
+
+  coding_fast:
+    provider: groq
+    model: openai/gpt-oss-120b
+    # Routine code generation — free, good enough for the 80% case.
+
+  coding_cheap:
+    provider: groq
+    model: openai/gpt-oss-20b
+
+  summarization_cheap:
+    provider: groq
+    model: openai/gpt-oss-20b
+    # Commit messages, changelog entries — high volume, low stakes.

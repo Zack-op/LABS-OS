@@ -1,0 +1,15 @@
+# Generated at runtime — never commit these, they're local state
+__pycache__/
+*.pyc
+ak_labs_os.db
+ak_labs_os.db-wal
+ak_labs_os.db-shm
+PROJECT_CONTEXT.md
+output/
+
+# Secrets
+.env
+
+# Local venv, if you make one here
+.venv/
+venv/
