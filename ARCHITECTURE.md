@@ -44,9 +44,10 @@ memories. (Implemented: `culture.yaml`, first draft — AK's to edit.)
 
 **5. Workflow over prompting.**
 Long-term objective: reduce manual prompt orchestration. Departments
-communicate through structured work orders and shared context, not
-the founder re-explaining project state each time. (Not yet
-implemented — deserves its own design pass.)
+communicate through structured Work Orders, explicit handoff protocols,
+and shared context, not the founder re-explaining project state each time.
+(Implemented foundation: `work_orders/`. Planned next: Engineering
+Transaction Protocol as v0.4.2 Department Handoff Infrastructure.)
 
 **6. Preserve separation of responsibilities.**
 Each department has one primary responsibility. Avoid expanding an
@@ -57,6 +58,13 @@ individual intelligence.
 **7. Favor explicit architecture over clever abstractions.**
 Small systems stay readable. Delay inheritance, ownership metadata,
 or similar abstractions until they provide measurable value.
+
+**8. Maintain canonical ownership.**
+Every engineering concern has exactly one canonical owner. Work Orders own
+engineering state. The planned Engineering Transaction Protocol owns ownership
+transfer. Historian owns historical records. Validation Harness owns validation
+results. Policy Engine owns policy enforcement. Safe Artifact Writer owns
+artifact persistence.
 
 ## Immediate Development Rule
 
@@ -74,7 +82,7 @@ ambiguous, choose the option that moves AK Labs OS closer to
 functioning like a real engineering organization, not a coding
 assistant.
 
-## Status (updated as of this file's creation)
+## Status
 
 | Principle | State |
 |---|---|
@@ -82,6 +90,7 @@ assistant.
 | 2. Evidence-driven decisions | Substrate done — `historian.py: compute_policy_stats()`. No confidence score yet; needs more real execution history first. |
 | 3. Organizational memory | v0 done — `historian.py: detect_repeated_decisions()`, `policy_candidates` table. Human-approval-only, verified. |
 | 4. Organizational culture | First draft — `culture.yaml`, seeded, needs AK's edits |
-| 5. Workflow over prompting | Not started |
+| 5. Workflow over prompting | Foundation started — Work Order Domain Model implemented; ETP planned for department handoff |
 | 6. Single-responsibility departments | Enforced by convention so far — worth a formal check as departments grow |
 | 7. Explicit over clever | Ongoing discipline, not a one-time task |
+| 8. Canonical ownership | Documented invariant — see `docs/ARCHITECTURE.md` and ADR-0012 |
