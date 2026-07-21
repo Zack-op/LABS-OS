@@ -28,7 +28,7 @@
 | utf8_artifacts_gate | PASS |  |
 | verify_gating_gate | PASS |  |
 | project_context_gate | PASS |  |
-| work_orders_gate | PASS | C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_regression_final\work_orders\example_work_order.json |
+| work_orders_gate | PASS | C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_a4mwa8w8\work_orders\example_work_order.json |
 
 ## Critical Failures
 None.
@@ -58,12 +58,12 @@ Not included in this command.
 Not included in this command.
 
 ## Artifacts
-- example_work_order: `C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_regression_final\work_orders\example_work_order.json`
+- example_work_order: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_a4mwa8w8\work_orders\example_work_order.json`
 
 ## Environment
-- Python: 3.13.3
+- Python: 3.13.14
 - Platform: Windows-11-10.0.26200-SP0
-- Workspace: `C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_regression_final`
+- Workspace: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_a4mwa8w8`
 
 ## Version Recommendation
 - Current: v0.4.1-alpha

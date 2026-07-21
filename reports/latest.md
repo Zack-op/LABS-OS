@@ -9,36 +9,26 @@
 ## Validation Matrix
 | Suite | Status | Required | Notes |
 |---|---:|---:|---|
-| environment | PASS | True | All checks passed |
-| configuration | PASS | True | All checks passed |
-| mock_pipeline | PASS | True | All checks passed |
 | reviewer_regression | PASS | True | All checks passed |
-| reviewer_adversarial | PASS | True | All checks passed |
 | architect_normalization | PASS | True | All checks passed |
 | retry_fallback | PASS | True | All checks passed |
 | historian | PASS | True | All checks passed |
 | utf8_artifacts | PASS | True | All checks passed |
 | verify_gating | PASS | True | All checks passed |
 | project_context | PASS | True | All checks passed |
-| filesystem_safety | PASS | True | All checks passed |
 | work_orders | PASS | True | All checks passed |
 
 ## Definition of Done
 | Item | Status | Evidence |
 |---|---:|---|
-| environment_gate | PASS |  |
-| configuration_gate | PASS |  |
-| mock_pipeline_gate | PASS | C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_dod_final\mock_pipeline\stdout.txt |
 | reviewer_regression_gate | PASS |  |
-| reviewer_adversarial_gate | PASS |  |
 | architect_normalization_gate | PASS |  |
 | retry_fallback_gate | PASS |  |
 | historian_gate | PASS |  |
 | utf8_artifacts_gate | PASS |  |
 | verify_gating_gate | PASS |  |
 | project_context_gate | PASS |  |
-| filesystem_safety_gate | PASS |  |
-| work_orders_gate | PASS | C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_dod_final\work_orders\example_work_order.json |
+| work_orders_gate | PASS | C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_a4mwa8w8\work_orders\example_work_order.json |
 
 ## Critical Failures
 None.
@@ -62,33 +52,18 @@ None.
 - protected_file_read_only: PASS
 
 ## Adversarial Results
-- plaintext_password: PASS
-- missing_auth: PASS
-- sql_inline_concat: PASS
-- sql_variable_concat: PASS
-- sql_percent: PASS
-- sql_augassign: PASS
-- command_direct: PASS
-- command_alias: PASS
-- os_popen: PASS
-- dangerous_fs_direct: PASS
-- dangerous_fs_alias: PASS
-- path_unlink: PASS
-- protected_file_write: PASS
-- protected_file_open_write: PASS
-- secure_parameterized: PASS
+Not included in this command.
 
 ## Live LLM Results
 Not included in this command.
 
 ## Artifacts
-- stdout: `C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_dod_final\mock_pipeline\stdout.txt`
-- example_work_order: `C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_dod_final\work_orders\example_work_order.json`
+- example_work_order: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_a4mwa8w8\work_orders\example_work_order.json`
 
 ## Environment
-- Python: 3.13.3
+- Python: 3.13.14
 - Platform: Windows-11-10.0.26200-SP0
-- Workspace: `C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_dod_final`
+- Workspace: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_a4mwa8w8`
 
 ## Version Recommendation
 - Current: v0.4.1-alpha

@@ -28,7 +28,7 @@
 |---|---:|---|
 | environment_gate | PASS |  |
 | configuration_gate | PASS |  |
-| mock_pipeline_gate | PASS | C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_release_final\mock_pipeline\stdout.txt |
+| mock_pipeline_gate | PASS | C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_jkkoxkby\mock_pipeline\stdout.txt |
 | reviewer_regression_gate | PASS |  |
 | reviewer_adversarial_gate | PASS |  |
 | architect_normalization_gate | PASS |  |
@@ -38,7 +38,7 @@
 | verify_gating_gate | PASS |  |
 | project_context_gate | PASS |  |
 | filesystem_safety_gate | PASS |  |
-| work_orders_gate | PASS | C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_release_final\work_orders\example_work_order.json |
+| work_orders_gate | PASS | C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_jkkoxkby\work_orders\example_work_order.json |
 
 ## Critical Failures
 None.
@@ -82,13 +82,13 @@ None.
 Not included in this command.
 
 ## Artifacts
-- stdout: `C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_release_final\mock_pipeline\stdout.txt`
-- example_work_order: `C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_release_final\work_orders\example_work_order.json`
+- stdout: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_jkkoxkby\mock_pipeline\stdout.txt`
+- example_work_order: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_jkkoxkby\work_orders\example_work_order.json`
 
 ## Environment
-- Python: 3.13.3
+- Python: 3.13.14
 - Platform: Windows-11-10.0.26200-SP0
-- Workspace: `C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_release_final`
+- Workspace: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_jkkoxkby`
 
 ## Version Recommendation
 - Current: v0.4.1-alpha
