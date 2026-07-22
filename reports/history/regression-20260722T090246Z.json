@@ -2,20 +2,20 @@
   "schema_version": "1.0",
   "project": "AK Labs OS",
   "validation_version": "v0.3.0",
-  "run_id": "deterministic-regression",
+  "run_id": "regression-20260722T090246Z",
   "command": "regression",
   "profile": "release",
-  "deterministic": true,
-  "overall_status": "PASS",
-  "exit_code": 0,
+  "deterministic": false,
+  "overall_status": "FAIL",
+  "exit_code": 1,
   "version_recommendation": {
     "current": "v0.4.1-alpha",
     "suggested": "v0.4.1-alpha",
-    "readiness_score": 100,
-    "reason": "All required v0.4.1 release validation gates passed."
+    "readiness_score": 78,
+    "reason": "Release blocked by required validation gate(s): verify_gating, etp_integration"
   },
   "definition_of_done": {
-    "status": "PASS",
+    "status": "FAIL",
     "items": [
       {
         "id": "reviewer_regression_gate",
@@ -61,7 +61,7 @@
         "id": "verify_gating_gate",
         "description": "verify_gating suite must pass",
         "required": true,
-        "status": "PASS",
+        "status": "FAIL",
         "source_suite": "verify_gating",
         "evidence_refs": []
       },
@@ -80,14 +80,14 @@
         "status": "PASS",
         "source_suite": "work_orders",
         "evidence_refs": [
-          "C:\\Users\\ajagg\\AppData\\Local\\Temp\\ak_labs_validation_1szakrsg\\work_orders\\example_work_order.json"
+          "C:\\Users\\ajagg\\AppData\\Local\\Temp\\ak_labs_validation_tqxd7k_o\\work_orders\\example_work_order.json"
         ]
       },
       {
         "id": "etp_integration_gate",
         "description": "etp_integration suite must pass",
         "required": true,
-        "status": "PASS",
+        "status": "FAIL",
         "source_suite": "etp_integration",
         "evidence_refs": []
       }
@@ -98,15 +98,15 @@
     "platform": "Windows-11-10.0.26200-SP0",
     "has_groq_key": true,
     "has_anthropic_key": false,
-    "workspace": "C:\\Users\\ajagg\\AppData\\Local\\Temp\\ak_labs_validation_1szakrsg"
+    "workspace": "C:\\Users\\ajagg\\AppData\\Local\\Temp\\ak_labs_validation_tqxd7k_o"
   },
   "suites": [
     {
       "suite_id": "reviewer_regression",
       "status": "PASS",
       "required": true,
-      "started_at": null,
-      "duration_ms": 0,
+      "started_at": "2026-07-22T09:02:46+00:00",
+      "duration_ms": 722,
       "checks": [
         {
           "check_id": "sql_variable_concat",
@@ -340,8 +340,8 @@
       "suite_id": "architect_normalization",
       "status": "PASS",
       "required": true,
-      "started_at": null,
-      "duration_ms": 0,
+      "started_at": "2026-07-22T09:02:46+00:00",
+      "duration_ms": 10,
       "checks": [
         {
           "check_id": "exact_json",
@@ -458,14 +458,14 @@
       "suite_id": "retry_fallback",
       "status": "PASS",
       "required": true,
-      "started_at": null,
-      "duration_ms": 0,
+      "started_at": "2026-07-22T09:02:46+00:00",
+      "duration_ms": 74,
       "checks": [
         {
           "check_id": "retry_once_then_valid",
           "status": "PASS",
           "expected": "One retry then valid work order",
-          "actual": "{'brief': {'title': 'Valid', 'in_scope': ['Do one thing'], 'out_of_scope': ['Do not do another thing'], 'acceptance_criteria': ['It works']}, 'decision': {'proceed': True, 'escalate': False, 'interrupt_level': 'none', 'reason': None, 'on_escalate': None}, 'used_fallback': False, 'invalid_logs': ['output\\\\architect_logs\\\\retry_then_valid_attempt_1_invalid_20260722T105930Z.json'], 'normalization_logs': [], 'validation_error': None}",
+          "actual": "{'brief': {'title': 'Valid', 'in_scope': ['Do one thing'], 'out_of_scope': ['Do not do another thing'], 'acceptance_criteria': ['It works']}, 'decision': {'proceed': True, 'escalate': False, 'interrupt_level': 'none', 'reason': None, 'on_escalate': None}, 'used_fallback': False, 'invalid_logs': ['output\\\\architect_logs\\\\retry_then_valid_attempt_1_invalid_20260722T090246Z.json'], 'normalization_logs': [], 'validation_error': None}",
           "evidence": {
             "calls": 2,
             "result": {
@@ -490,7 +490,7 @@
               },
               "used_fallback": false,
               "invalid_logs": [
-                "output\\architect_logs\\retry_then_valid_attempt_1_invalid_20260722T105930Z.json"
+                "output\\architect_logs\\retry_then_valid_attempt_1_invalid_20260722T090246Z.json"
               ],
               "normalization_logs": [],
               "validation_error": null
@@ -502,7 +502,7 @@
           "check_id": "fallback_after_two_invalid",
           "status": "PASS",
           "expected": "Two invalid responses produce logged fallback",
-          "actual": "{'brief': {'title': 'Fallback after invalid', 'in_scope': ['Implement exactly this request: Fallback after invalid'], 'out_of_scope': ['Anything not explicitly required by the feature request', 'External services, persistence, deployment, or UI unless explicitly requested'], 'acceptance_criteria': ['Generated artifact is written to disk', 'Generated artifact passes Reviewer', 'Generated artifact parses as valid Python', 'Implementation directly addresses: Fallback after invalid']}, 'decision': {'proceed': True, 'escalate': False, 'interrupt_level': 'none', 'reason': None, 'on_escalate': None}, 'used_fallback': True, 'invalid_logs': ['output\\\\architect_logs\\\\fallback_after_invalid_attempt_1_invalid_20260722T105930Z.json', 'output\\\\architect_logs\\\\fallback_after_invalid_attempt_2_invalid_20260722T105930Z.json'], 'normalization_logs': [], 'fallback_log': 'output\\\\architect_logs\\\\fallback_after_invalid_attempt_3_fallback_20260722T105930Z.json', 'validation_error': 'missing required key(s): out_of_scope, acceptance_criteria'}",
+          "actual": "{'brief': {'title': 'Fallback after invalid', 'in_scope': ['Implement exactly this request: Fallback after invalid'], 'out_of_scope': ['Anything not explicitly required by the feature request', 'External services, persistence, deployment, or UI unless explicitly requested'], 'acceptance_criteria': ['Generated artifact is written to disk', 'Generated artifact passes Reviewer', 'Generated artifact parses as valid Python', 'Implementation directly addresses: Fallback after invalid']}, 'decision': {'proceed': True, 'escalate': False, 'interrupt_level': 'none', 'reason': None, 'on_escalate': None}, 'used_fallback': True, 'invalid_logs': ['output\\\\architect_logs\\\\fallback_after_invalid_attempt_1_invalid_20260722T090246Z.json', 'output\\\\architect_logs\\\\fallback_after_invalid_attempt_2_invalid_20260722T090246Z.json'], 'normalization_logs': [], 'fallback_log': 'output\\\\architect_logs\\\\fallback_after_invalid_attempt_3_fallback_20260722T090246Z.json', 'validation_error': 'missing required key(s): out_of_scope, acceptance_criteria'}",
           "evidence": {
             "calls": 2,
             "result": {
@@ -531,11 +531,11 @@
               },
               "used_fallback": true,
               "invalid_logs": [
-                "output\\architect_logs\\fallback_after_invalid_attempt_1_invalid_20260722T105930Z.json",
-                "output\\architect_logs\\fallback_after_invalid_attempt_2_invalid_20260722T105930Z.json"
+                "output\\architect_logs\\fallback_after_invalid_attempt_1_invalid_20260722T090246Z.json",
+                "output\\architect_logs\\fallback_after_invalid_attempt_2_invalid_20260722T090246Z.json"
               ],
               "normalization_logs": [],
-              "fallback_log": "output\\architect_logs\\fallback_after_invalid_attempt_3_fallback_20260722T105930Z.json",
+              "fallback_log": "output\\architect_logs\\fallback_after_invalid_attempt_3_fallback_20260722T090246Z.json",
               "validation_error": "missing required key(s): out_of_scope, acceptance_criteria"
             }
           },
@@ -551,8 +551,8 @@
       "suite_id": "historian",
       "status": "PASS",
       "required": true,
-      "started_at": null,
-      "duration_ms": 0,
+      "started_at": "2026-07-22T09:02:46+00:00",
+      "duration_ms": 16,
       "checks": [
         {
           "check_id": "review_persistence_utf8",
@@ -572,8 +572,8 @@
       "suite_id": "utf8_artifacts",
       "status": "PASS",
       "required": true,
-      "started_at": null,
-      "duration_ms": 0,
+      "started_at": "2026-07-22T09:02:46+00:00",
+      "duration_ms": 30,
       "checks": [
         {
           "check_id": "utf8_write_read_verify",
@@ -607,37 +607,30 @@
     },
     {
       "suite_id": "verify_gating",
-      "status": "PASS",
+      "status": "ERROR",
       "required": true,
-      "started_at": null,
+      "started_at": "2026-07-22T09:02:47+00:00",
       "duration_ms": 0,
-      "checks": [
-        {
-          "check_id": "verify_not_called_after_reviewer_fail",
-          "status": "PASS",
-          "expected": "Verify is skipped after Reviewer FAIL",
-          "actual": "not called",
-          "evidence": {},
-          "artifact_paths": []
-        }
-      ],
+      "checks": [],
       "artifacts": [],
       "evidence": {},
-      "failures": [],
+      "failures": [
+        "WorkOrderValidationError('acceptance_criteria must contain at least one item')"
+      ],
       "warnings": []
     },
     {
       "suite_id": "project_context",
       "status": "PASS",
       "required": true,
-      "started_at": null,
-      "duration_ms": 0,
+      "started_at": "2026-07-22T09:02:47+00:00",
+      "duration_ms": 19,
       "checks": [
         {
           "check_id": "project_context_utf8_logging",
           "status": "PASS",
           "expected": "PROJECT_CONTEXT logs Unicode",
-          "actual": ":30+00:00] FAILED at reviewer: Verify gating reviewer fail - Reviewer blocked generated code with 2 blocking issue(s). -> output\\valid_review.md\n- [2026-07-22T10:59:30+00:00] PROJECT_CONTEXT unicode \ud83d\ude80",
+          "actual": "# PROJECT_CONTEXT.md\n\n- [2026-07-22T09:02:47+00:00] PROJECT_CONTEXT unicode \ud83d\ude80",
           "evidence": {},
           "artifact_paths": []
         }
@@ -651,8 +644,8 @@
       "suite_id": "work_orders",
       "status": "PASS",
       "required": true,
-      "started_at": null,
-      "duration_ms": 0,
+      "started_at": "2026-07-22T09:02:47+00:00",
+      "duration_ms": 14,
       "checks": [
         {
           "check_id": "id_generation",
@@ -802,7 +795,7 @@
       "artifacts": [
         {
           "type": "example_work_order",
-          "path": "C:\\Users\\ajagg\\AppData\\Local\\Temp\\ak_labs_validation_1szakrsg\\work_orders\\example_work_order.json",
+          "path": "C:\\Users\\ajagg\\AppData\\Local\\Temp\\ak_labs_validation_tqxd7k_o\\work_orders\\example_work_order.json",
           "sha256": null,
           "description": "Canonical Work Order JSON example"
         }
@@ -813,52 +806,29 @@
     },
     {
       "suite_id": "etp_integration",
-      "status": "PASS",
+      "status": "ERROR",
       "required": true,
-      "started_at": null,
+      "started_at": "2026-07-22T09:02:47+00:00",
       "duration_ms": 0,
-      "checks": [
-        {
-          "check_id": "etp_clean_run",
-          "status": "PASS",
-          "expected": "Clean pipeline records 4 consecutive ACCEPTED transactions",
-          "actual": "[1, 2, 3, 4]",
-          "evidence": {},
-          "artifact_paths": []
-        },
-        {
-          "check_id": "etp_linkage",
-          "status": "PASS",
-          "expected": "Pipeline transactions contain correct previous_transaction_id linkage",
-          "actual": "linked correctly",
-          "evidence": {},
-          "artifact_paths": []
-        },
-        {
-          "check_id": "etp_rejected_run",
-          "status": "PASS",
-          "expected": "Failed pipeline explicitly records a REJECTED transaction with unchanged ownership",
-          "actual": "(2, 'REJECTED')",
-          "evidence": {},
-          "artifact_paths": []
-        }
-      ],
+      "checks": [],
       "artifacts": [],
       "evidence": {},
-      "failures": [],
+      "failures": [
+        "WorkOrderValidationError('acceptance_criteria must contain at least one item')"
+      ],
       "warnings": []
     }
   ],
   "artifacts": [
     {
       "type": "example_work_order",
-      "path": "C:\\Users\\ajagg\\AppData\\Local\\Temp\\ak_labs_validation_1szakrsg\\work_orders\\example_work_order.json",
+      "path": "C:\\Users\\ajagg\\AppData\\Local\\Temp\\ak_labs_validation_tqxd7k_o\\work_orders\\example_work_order.json",
       "sha256": null,
       "description": "Canonical Work Order JSON example"
     }
   ],
   "summary": {
-    "passed": 9,
+    "passed": 7,
     "failed": 0,
     "not_tested": 0,
     "warnings": 0

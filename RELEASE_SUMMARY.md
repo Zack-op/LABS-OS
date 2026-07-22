@@ -920,3 +920,42 @@ failure crashes, missing reproducibility assets, and lack of automated tests.
 - Markdown report: `D:\ak_labs_os\reports\history\deterministic-regression.md`
 - Failed required suites: none
 
+
+## Release Validation Harness Run - 2026-07-22T09:02:47+00:00
+
+- Command: `regression`
+- Profile: `release`
+- Overall status: FAIL
+- Exit code: 1
+- Readiness score: 78/100
+- Suggested version: v0.4.1-alpha
+- JSON report: `D:\ak_labs_os\reports\history\regression-20260722T090246Z.json`
+- Markdown report: `D:\ak_labs_os\reports\history\regression-20260722T090246Z.md`
+- Failed required suites: verify_gating, etp_integration
+
+
+## Release Validation Harness Run - 2026-07-22T10:33:17+00:00
+
+- Command: `regression`
+- Profile: `release`
+- Overall status: FAIL
+- Exit code: 1
+- Readiness score: 79/100
+- Suggested version: v0.4.1-alpha
+- JSON report: `D:\ak_labs_os\reports\history\regression-20260722T103316Z.json`
+- Markdown report: `D:\ak_labs_os\reports\history\regression-20260722T103316Z.md`
+- Failed required suites: etp_integration
+
+
+## Release Validation Harness Run - deterministic
+
+- Command: `regression`
+- Profile: `release`
+- Overall status: PASS
+- Exit code: 0
+- Readiness score: 100/100
+- Suggested version: v0.4.1-alpha
+- JSON report: `D:\ak_labs_os\reports\history\deterministic-regression.json`
+- Markdown report: `D:\ak_labs_os\reports\history\deterministic-regression.md`
+- Failed required suites: none
+

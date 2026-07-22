@@ -78,6 +78,35 @@ def _ensure_tables(conn) -> None:
             event_json TEXT
         )
     """)
+    
+    # 1. Base ETP table
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS etp_transactions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            created_ts TEXT,
+            transaction_id TEXT,
+            work_order_id TEXT,
+            source_department TEXT,
+            destination_department TEXT,
+            outcome TEXT,
+            transaction_json TEXT
+        )
+    """)
+    
+    # 2. Resilient Schema Evolution: Check for new columns and migrate
+    cursor = conn.execute("PRAGMA table_info(etp_transactions)")
+    columns = {row[1] for row in cursor.fetchall()}
+    
+    try:
+        if "sequence_number" not in columns:
+            conn.execute("ALTER TABLE etp_transactions ADD COLUMN sequence_number INTEGER")
+        if "previous_transaction_id" not in columns:
+            conn.execute("ALTER TABLE etp_transactions ADD COLUMN previous_transaction_id TEXT")
+    except sqlite3.OperationalError as e:
+        # Ignore race conditions resulting in 'duplicate column name'
+        if "duplicate column name" not in str(e).lower():
+            raise
+            
     conn.commit()
 
 
@@ -230,6 +259,32 @@ def record_filesystem_event(event: dict) -> int:
             event.get("originating_department"),
             json.dumps(event, sort_keys=True),
         ),
+    )
+    conn.commit()
+    row_id = cur.lastrowid
+    conn.close()
+    return row_id
+
+
+def record_etp_transaction(tx_dict: dict) -> int:
+    """Persist an ETP transaction as organizational memory."""
+    conn = _connect()
+    cur = conn.execute(
+        "INSERT INTO etp_transactions "
+        "(created_ts, transaction_id, sequence_number, previous_transaction_id, "
+        "work_order_id, source_department, destination_department, outcome, transaction_json) "
+        "VALUES (?,?,?,?,?,?,?,?,?)",
+        (
+            tx_dict.get("created_at") or datetime.now(timezone.utc).isoformat(),
+            tx_dict.get("transaction_id"),
+            tx_dict.get("sequence_number"),
+            tx_dict.get("previous_transaction_id"),
+            tx_dict.get("work_order_id"),
+            tx_dict.get("source_department"),
+            tx_dict.get("destination_department"),
+            tx_dict.get("outcome"),
+            json.dumps(tx_dict, sort_keys=True)
+        )
     )
     conn.commit()
     row_id = cur.lastrowid

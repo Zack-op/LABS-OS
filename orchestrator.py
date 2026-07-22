@@ -26,8 +26,15 @@ from pathlib import Path
 
 from policy_engine import load_policies, evaluate
 from llm_router import call_model
-from historian import record_review
 from safe_artifact_writer import ArtifactWriteError, SafeArtifactWriter
+from historian import record_review, record_etp_transaction
+
+# ETP and Work Order Integration Imports
+from work_orders.models import AcceptanceCriterion
+from work_orders.manager import WorkOrderManager
+from work_orders.enums import Department
+from etp.enums import TransferIntent
+from etp.tracker import ETPTracker
 
 OUTPUT_DIR = Path("output")
 CONTEXT_FILE = Path("PROJECT_CONTEXT.md")
@@ -737,6 +744,22 @@ def append_to_context(entry: str) -> None:
     else:
         writer.write_text(CONTEXT_FILE, f"# PROJECT_CONTEXT.md\n{line}", origin="orchestrator", allow_protected=True)
 
+def _create_work_order_from_brief(wm: WorkOrderManager, brief: dict) -> 'WorkOrder':
+    """Translates the Architect brief into a valid canonical Work Order."""
+    
+    # Validation strictly requires AC IDs to match AC-XXX pattern
+    ac_objects = [
+        AcceptanceCriterion(id=f"AC-{idx:03d}", description=desc, mandatory=True)
+        for idx, desc in enumerate(brief["acceptance_criteria"], start=1)
+    ]
+    
+    return wm.create(
+        title=brief.get("title", "Generated Feature"),
+        objective=brief.get("title", "Generated Feature"),
+        department=Department.ARCHITECT,
+        current_owner=Department.ARCHITECT.value,
+        acceptance_criteria=ac_objects
+    )
 
 def run(feature_request: str, mock: bool) -> None:
     policies = load_policies()
@@ -753,6 +776,37 @@ def run(feature_request: str, mock: bool) -> None:
         append_to_context(f"ESCALATED at scope_compile: {feature_request}")
         return
     brief = scope_result["brief"]
+    
+    # --- ETP Context Initialization ---
+    wm = WorkOrderManager()
+    wo = _create_work_order_from_brief(wm, brief)
+    etp_tracker = ETPTracker("1.0")
+
+    def execute_handoff(dest_dept: Department, intent: TransferIntent, reason: str, reject_reason: str | None = None):
+        """Helper to evaluate ETP, log to Historian, and update Work Order state if accepted."""
+        
+        # Derive canonical state directly from the Work Order
+        current_dept_str = getattr(wo.department, "value", wo.department)
+        
+        tx = etp_tracker.attempt_transfer(
+            work_order_id=wo.id,
+            current_department=current_dept_str,
+            destination_department=dest_dept.value,
+            intent=intent,
+            reason=reason,
+            reject_reason=reject_reason
+        )
+        
+        record_etp_transaction(tx.to_dict())
+        
+        outcome_str = getattr(tx.outcome, "value", tx.outcome)
+        if outcome_str == "ACCEPTED":
+            # Note: WorkOrderManager currently updates the WorkOrder instance in place.
+            wm.transfer_department(wo.id, dest_dept, owner=dest_dept.value, changed_by=tx.source_department, reason=reason)
+
+    # Transfer: Architect -> Developer
+    execute_handoff(Department.DEVELOPER, TransferIntent.HANDOFF, "Architect to Developer handoff")
+
     for log_path in scope_result.get("normalization_logs", []):
         print(f"  Normalized malformed provider wrapper; raw response logged: {log_path}")
         append_to_context(f"NORMALIZED at scope_compile: {feature_request} -> {log_path}")
@@ -773,8 +827,13 @@ def run(feature_request: str, mock: bool) -> None:
         print(f"  STOP [approval] — filesystem_safety blocked artifact write: {event['reason']}")
         print(f"  Path: {event['attempted_path']}")
         append_to_context(f"BLOCKED at filesystem_safety: {feature_request} - {event['reason']}")
+        # Attempted handoff to Reviewer is rejected; ownership remains Developer
+        execute_handoff(Department.REVIEWER, TransferIntent.REVIEW, "Developer to Reviewer handoff", reject_reason=event['reason'])
         return
     print(f"  Written to: {dev_result['path']}")
+
+    # Transfer: Developer -> Reviewer
+    execute_handoff(Department.REVIEWER, TransferIntent.REVIEW, "Developer to Reviewer handoff")
 
     print("\n[3/5] Reviewer: checking generated code...")
     review = review_generated_code(brief, dev_result)
@@ -793,8 +852,13 @@ def run(feature_request: str, mock: bool) -> None:
             line = f":{issue['line']}" if "line" in issue else ""
             print(f"  - {issue['category']}{line}: {issue['message']}")
         append_to_context(f"FAILED at reviewer: {feature_request} - {review['summary']} -> {review_path}")
+        # Attempted handoff to Verify is rejected; ownership remains Reviewer
+        execute_handoff(Department.VALIDATOR, TransferIntent.VALIDATE, "Reviewer to Verify handoff", reject_reason=review['summary'])
         return
     print("  Passed — no blocking review issues.")
+
+    # Transfer: Reviewer -> Verify/Validator
+    execute_handoff(Department.VALIDATOR, TransferIntent.VALIDATE, "Reviewer to Verify handoff")
 
     print("\n[4/5] Verify: checking the output is real...")
     verify_result = verify_output(dev_result["path"], policies)
@@ -802,8 +866,13 @@ def run(feature_request: str, mock: bool) -> None:
         print(f"  STOP [{verify_result['decision']['interrupt_level']}] — escalated to AK: {verify_result['decision']['reason']}")
         print(f"  Facts: {verify_result['facts']}")
         append_to_context(f"ESCALATED at verify_output: {feature_request} — {verify_result['facts']}")
+        # Attempted handoff to Commit/Historian is rejected; ownership remains Validator
+        execute_handoff(Department.HISTORIAN, TransferIntent.COMPLETE, "Verify to Commit handoff", reject_reason=verify_result['decision']['reason'])
         return
     print("  Passed — syntax valid, file non-empty.")
+
+    # Transfer: Validator -> Historian (Commit Message Phase)
+    execute_handoff(Department.HISTORIAN, TransferIntent.COMPLETE, "Verify to Commit handoff")
 
     print("\n[5/5] Commit message + log...")
     commit_msg = generate_commit_message(brief, policies, mock)

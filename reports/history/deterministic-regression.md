@@ -17,6 +17,7 @@
 | verify_gating | PASS | True | All checks passed |
 | project_context | PASS | True | All checks passed |
 | work_orders | PASS | True | All checks passed |
+| etp_integration | PASS | True | All checks passed |
 
 ## Definition of Done
 | Item | Status | Evidence |
@@ -28,7 +29,8 @@
 | utf8_artifacts_gate | PASS |  |
 | verify_gating_gate | PASS |  |
 | project_context_gate | PASS |  |
-| work_orders_gate | PASS | C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_a4mwa8w8\work_orders\example_work_order.json |
+| work_orders_gate | PASS | C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_1szakrsg\work_orders\example_work_order.json |
+| etp_integration_gate | PASS |  |
 
 ## Critical Failures
 None.
@@ -58,12 +60,12 @@ Not included in this command.
 Not included in this command.
 
 ## Artifacts
-- example_work_order: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_a4mwa8w8\work_orders\example_work_order.json`
+- example_work_order: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_1szakrsg\work_orders\example_work_order.json`
 
 ## Environment
 - Python: 3.13.14
 - Platform: Windows-11-10.0.26200-SP0
-- Workspace: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_a4mwa8w8`
+- Workspace: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_1szakrsg`
 
 ## Version Recommendation
 - Current: v0.4.1-alpha
