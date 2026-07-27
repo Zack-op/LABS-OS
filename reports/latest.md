@@ -9,28 +9,40 @@
 ## Validation Matrix
 | Suite | Status | Required | Notes |
 |---|---:|---:|---|
+| environment | PASS | True | All checks passed |
+| configuration | PASS | True | All checks passed |
+| mock_pipeline | PASS | True | All checks passed |
 | reviewer_regression | PASS | True | All checks passed |
+| reviewer_adversarial | PASS | True | All checks passed |
 | architect_normalization | PASS | True | All checks passed |
 | retry_fallback | PASS | True | All checks passed |
 | historian | PASS | True | All checks passed |
 | utf8_artifacts | PASS | True | All checks passed |
 | verify_gating | PASS | True | All checks passed |
 | project_context | PASS | True | All checks passed |
+| filesystem_safety | PASS | True | All checks passed |
 | work_orders | PASS | True | All checks passed |
 | etp_integration | PASS | True | All checks passed |
+| repo_intelligence | PASS | True | All checks passed |
 
 ## Definition of Done
 | Item | Status | Evidence |
 |---|---:|---|
+| environment_gate | PASS |  |
+| configuration_gate | PASS |  |
+| mock_pipeline_gate | PASS | C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation__anw93be\mock_pipeline\stdout.txt |
 | reviewer_regression_gate | PASS |  |
+| reviewer_adversarial_gate | PASS |  |
 | architect_normalization_gate | PASS |  |
 | retry_fallback_gate | PASS |  |
 | historian_gate | PASS |  |
 | utf8_artifacts_gate | PASS |  |
 | verify_gating_gate | PASS |  |
 | project_context_gate | PASS |  |
-| work_orders_gate | PASS | C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_1szakrsg\work_orders\example_work_order.json |
+| filesystem_safety_gate | PASS |  |
+| work_orders_gate | PASS | C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation__anw93be\work_orders\example_work_order.json |
 | etp_integration_gate | PASS |  |
+| repo_intelligence_gate | PASS |  |
 
 ## Critical Failures
 None.
@@ -54,18 +66,33 @@ None.
 - protected_file_read_only: PASS
 
 ## Adversarial Results
-Not included in this command.
+- plaintext_password: PASS
+- missing_auth: PASS
+- sql_inline_concat: PASS
+- sql_variable_concat: PASS
+- sql_percent: PASS
+- sql_augassign: PASS
+- command_direct: PASS
+- command_alias: PASS
+- os_popen: PASS
+- dangerous_fs_direct: PASS
+- dangerous_fs_alias: PASS
+- path_unlink: PASS
+- protected_file_write: PASS
+- protected_file_open_write: PASS
+- secure_parameterized: PASS
 
 ## Live LLM Results
 Not included in this command.
 
 ## Artifacts
-- example_work_order: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_1szakrsg\work_orders\example_work_order.json`
+- stdout: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation__anw93be\mock_pipeline\stdout.txt`
+- example_work_order: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation__anw93be\work_orders\example_work_order.json`
 
 ## Environment
 - Python: 3.13.14
 - Platform: Windows-11-10.0.26200-SP0
-- Workspace: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_1szakrsg`
+- Workspace: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation__anw93be`
 
 ## Version Recommendation
 - Current: v0.4.1-alpha

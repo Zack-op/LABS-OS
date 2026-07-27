@@ -22,6 +22,7 @@ SUITES = [
     SuiteSpec("filesystem_safety", "validation.suites.filesystem_safety"),
     SuiteSpec("work_orders", "validation.suites.work_orders"),
     SuiteSpec("etp_integration", "validation.suites.etp_integration"),
+    SuiteSpec("repo_intelligence", "validation.suites.repo_intelligence"),
 ]
 
 COMMAND_SUITES = {
@@ -36,6 +37,7 @@ COMMAND_SUITES = {
         "project_context",
         "work_orders",
         "etp_integration",
+        "repo_intelligence",
     ],
     "adversarial": ["reviewer_adversarial"],
     "dod": [spec.suite_id for spec in SUITES],

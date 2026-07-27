@@ -959,3 +959,68 @@ failure crashes, missing reproducibility assets, and lack of automated tests.
 - Markdown report: `D:\ak_labs_os\reports\history\deterministic-regression.md`
 - Failed required suites: none
 
+
+## Release Validation Harness Run - deterministic
+
+- Command: `release`
+- Profile: `release`
+- Overall status: FAIL
+- Exit code: 1
+- Readiness score: 79/100
+- Suggested version: v0.4.1-alpha
+- JSON report: `D:\ak_labs_os\reports\history\deterministic-release.json`
+- Markdown report: `D:\ak_labs_os\reports\history\deterministic-release.md`
+- Failed required suites: repo_intelligence
+
+
+## Release Validation Harness Run - deterministic
+
+- Command: `adversarial`
+- Profile: `release`
+- Overall status: PASS
+- Exit code: 0
+- Readiness score: 100/100
+- Suggested version: v0.4.1-alpha
+- JSON report: `D:\ak_labs_os\reports\history\deterministic-adversarial.json`
+- Markdown report: `D:\ak_labs_os\reports\history\deterministic-adversarial.md`
+- Failed required suites: none
+
+
+## Release Validation Harness Run - deterministic
+
+- Command: `dod`
+- Profile: `release`
+- Overall status: FAIL
+- Exit code: 1
+- Readiness score: 79/100
+- Suggested version: v0.4.1-alpha
+- JSON report: `D:\ak_labs_os\reports\history\deterministic-dod.json`
+- Markdown report: `D:\ak_labs_os\reports\history\deterministic-dod.md`
+- Failed required suites: repo_intelligence
+
+
+## Release Validation Harness Run - deterministic
+
+- Command: `release`
+- Profile: `release`
+- Overall status: FAIL
+- Exit code: 1
+- Readiness score: 79/100
+- Suggested version: v0.4.1-alpha
+- JSON report: `D:\ak_labs_os\reports\history\deterministic-release.json`
+- Markdown report: `D:\ak_labs_os\reports\history\deterministic-release.md`
+- Failed required suites: repo_intelligence
+
+
+## Release Validation Harness Run - deterministic
+
+- Command: `release`
+- Profile: `release`
+- Overall status: PASS
+- Exit code: 0
+- Readiness score: 100/100
+- Suggested version: v0.4.1-alpha
+- JSON report: `D:\ak_labs_os\reports\history\deterministic-release.json`
+- Markdown report: `D:\ak_labs_os\reports\history\deterministic-release.md`
+- Failed required suites: none
+

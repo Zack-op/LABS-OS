@@ -51,9 +51,9 @@ Not included in this command.
 None.
 
 ## Environment
-- Python: 3.13.3
+- Python: 3.13.14
 - Platform: Windows-11-10.0.26200-SP0
-- Workspace: `C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_adversarial_final`
+- Workspace: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_z75bd9kv`
 
 ## Version Recommendation
 - Current: v0.4.1-alpha

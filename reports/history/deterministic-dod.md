@@ -1,10 +1,10 @@
 # AK Labs OS Release Validation Report
 
 ## Executive Summary
-- Overall status: PASS
+- Overall status: FAIL
 - Suggested version: v0.4.1-alpha
-- Readiness score: 100/100
-- Release recommendation: All required v0.4.1 release validation gates passed.
+- Readiness score: 79/100
+- Release recommendation: Release blocked by required validation gate(s): repo_intelligence
 
 ## Validation Matrix
 | Suite | Status | Required | Notes |
@@ -22,13 +22,15 @@
 | project_context | PASS | True | All checks passed |
 | filesystem_safety | PASS | True | All checks passed |
 | work_orders | PASS | True | All checks passed |
+| etp_integration | PASS | True | All checks passed |
+| repo_intelligence | ERROR | True | Failed checks: AttributeError("type object 'RepositoryType' has no attribute 'MONOREPO'") |
 
 ## Definition of Done
 | Item | Status | Evidence |
 |---|---:|---|
 | environment_gate | PASS |  |
 | configuration_gate | PASS |  |
-| mock_pipeline_gate | PASS | C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_dod_final\mock_pipeline\stdout.txt |
+| mock_pipeline_gate | PASS | C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_fm20e1ed\mock_pipeline\stdout.txt |
 | reviewer_regression_gate | PASS |  |
 | reviewer_adversarial_gate | PASS |  |
 | architect_normalization_gate | PASS |  |
@@ -38,7 +40,9 @@
 | verify_gating_gate | PASS |  |
 | project_context_gate | PASS |  |
 | filesystem_safety_gate | PASS |  |
-| work_orders_gate | PASS | C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_dod_final\work_orders\example_work_order.json |
+| work_orders_gate | PASS | C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_fm20e1ed\work_orders\example_work_order.json |
+| etp_integration_gate | PASS |  |
+| repo_intelligence_gate | FAIL |  |
 
 ## Critical Failures
 None.
@@ -82,18 +86,18 @@ None.
 Not included in this command.
 
 ## Artifacts
-- stdout: `C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_dod_final\mock_pipeline\stdout.txt`
-- example_work_order: `C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_dod_final\work_orders\example_work_order.json`
+- stdout: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_fm20e1ed\mock_pipeline\stdout.txt`
+- example_work_order: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_fm20e1ed\work_orders\example_work_order.json`
 
 ## Environment
-- Python: 3.13.3
+- Python: 3.13.14
 - Platform: Windows-11-10.0.26200-SP0
-- Workspace: `C:\Users\ajagg\.codex\visualizations\2026\07\19\019f799d-596c-7253-a8f7-d6aeaab80b90\harness_v041_dod_final`
+- Workspace: `C:\Users\ajagg\AppData\Local\Temp\ak_labs_validation_fm20e1ed`
 
 ## Version Recommendation
 - Current: v0.4.1-alpha
 - Suggested: v0.4.1-alpha
-- Reason: All required v0.4.1 release validation gates passed.
+- Reason: Release blocked by required validation gate(s): repo_intelligence
 
 ## RELEASE_SUMMARY Update
 Updated automatically unless report writing failed.
