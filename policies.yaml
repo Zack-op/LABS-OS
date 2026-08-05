@@ -139,3 +139,13 @@ policies:
     # Your AgencyOS "website_url NOT NULL" call was exactly this shape:
     # looked like a forgettable detail, turned out to gate your
     # highest-scoring lead segment. Highest interrupt level, always.
+  
+  # [Appended to the bottom of the file]
+  - id: file_selection
+    trigger: on_file_selection
+    action: hoi.select_files
+    stakes: reversible
+    review_cadence: permanent
+    interrupt_level: approval
+    escalate_if: "zero_files_matched OR low_rule_coverage OR conflicting_rules"
+    on_escalate: "notify_ak(block=true)"

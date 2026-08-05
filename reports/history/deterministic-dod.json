@@ -6,16 +6,16 @@
   "command": "dod",
   "profile": "release",
   "deterministic": true,
-  "overall_status": "PASS",
-  "exit_code": 0,
+  "overall_status": "FAIL",
+  "exit_code": 1,
   "version_recommendation": {
     "current": "v0.4.1-alpha",
     "suggested": "v0.4.1-alpha",
-    "readiness_score": 100,
-    "reason": "All required v0.4.1 release validation gates passed."
+    "readiness_score": 79,
+    "reason": "Release blocked by required validation gate(s): repo_intelligence"
   },
   "definition_of_done": {
-    "status": "PASS",
+    "status": "FAIL",
     "items": [
       {
         "id": "environment_gate",
@@ -40,7 +40,7 @@
         "status": "PASS",
         "source_suite": "mock_pipeline",
         "evidence_refs": [
-          "C:\\Users\\ajagg\\.codex\\visualizations\\2026\\07\\19\\019f799d-596c-7253-a8f7-d6aeaab80b90\\harness_v041_dod_final\\mock_pipeline\\stdout.txt"
+          "C:\\Users\\ajagg\\AppData\\Local\\Temp\\ak_labs_validation_fm20e1ed\\mock_pipeline\\stdout.txt"
         ]
       },
       {
@@ -122,17 +122,33 @@
         "status": "PASS",
         "source_suite": "work_orders",
         "evidence_refs": [
-          "C:\\Users\\ajagg\\.codex\\visualizations\\2026\\07\\19\\019f799d-596c-7253-a8f7-d6aeaab80b90\\harness_v041_dod_final\\work_orders\\example_work_order.json"
+          "C:\\Users\\ajagg\\AppData\\Local\\Temp\\ak_labs_validation_fm20e1ed\\work_orders\\example_work_order.json"
         ]
+      },
+      {
+        "id": "etp_integration_gate",
+        "description": "etp_integration suite must pass",
+        "required": true,
+        "status": "PASS",
+        "source_suite": "etp_integration",
+        "evidence_refs": []
+      },
+      {
+        "id": "repo_intelligence_gate",
+        "description": "repo_intelligence suite must pass",
+        "required": true,
+        "status": "FAIL",
+        "source_suite": "repo_intelligence",
+        "evidence_refs": []
       }
     ]
   },
   "environment": {
-    "python_version": "3.13.3",
+    "python_version": "3.13.14",
     "platform": "Windows-11-10.0.26200-SP0",
     "has_groq_key": true,
     "has_anthropic_key": false,
-    "workspace": "C:\\Users\\ajagg\\.codex\\visualizations\\2026\\07\\19\\019f799d-596c-7253-a8f7-d6aeaab80b90\\harness_v041_dod_final"
+    "workspace": "C:\\Users\\ajagg\\AppData\\Local\\Temp\\ak_labs_validation_fm20e1ed"
   },
   "suites": [
     {
@@ -146,7 +162,7 @@
           "check_id": "python_available",
           "status": "PASS",
           "expected": "Python runtime available",
-          "actual": "3.13.3",
+          "actual": "3.13.14",
           "evidence": {},
           "artifact_paths": []
         },
@@ -288,7 +304,7 @@
           "check_id": "mock_context_logged",
           "status": "PASS",
           "expected": "PROJECT_CONTEXT records shipped result",
-          "actual": "# PROJECT_CONTEXT.md\n\n- [2026-07-19T11:23:44+00:00] SHIPPED: feat: Build a function that validates an email address -> output\\build_a_function_that_validates_an_email.py",
+          "actual": "# PROJECT_CONTEXT.md\n\n- [2026-07-27T09:30:39+00:00] SHIPPED: feat: Build a function that validates an email address -> output\\build_a_function_that_validates_an_email.py",
           "evidence": {},
           "artifact_paths": []
         },
@@ -304,7 +320,7 @@
       "artifacts": [
         {
           "type": "stdout",
-          "path": "C:\\Users\\ajagg\\.codex\\visualizations\\2026\\07\\19\\019f799d-596c-7253-a8f7-d6aeaab80b90\\harness_v041_dod_final\\mock_pipeline\\stdout.txt",
+          "path": "C:\\Users\\ajagg\\AppData\\Local\\Temp\\ak_labs_validation_fm20e1ed\\mock_pipeline\\stdout.txt",
           "sha256": null,
           "description": "Mock pipeline stdout"
         }
@@ -1008,7 +1024,7 @@
           "check_id": "retry_once_then_valid",
           "status": "PASS",
           "expected": "One retry then valid work order",
-          "actual": "{'brief': {'title': 'Valid', 'in_scope': ['Do one thing'], 'out_of_scope': ['Do not do another thing'], 'acceptance_criteria': ['It works']}, 'decision': {'proceed': True, 'escalate': False, 'interrupt_level': 'none', 'reason': None, 'on_escalate': None}, 'used_fallback': False, 'invalid_logs': ['output\\\\architect_logs\\\\retry_then_valid_attempt_1_invalid_20260719T112344Z.json'], 'normalization_logs': [], 'validation_error': None}",
+          "actual": "{'brief': {'title': 'Valid', 'in_scope': ['Do one thing'], 'out_of_scope': ['Do not do another thing'], 'acceptance_criteria': ['It works']}, 'decision': {'proceed': True, 'escalate': False, 'interrupt_level': 'none', 'reason': None, 'on_escalate': None}, 'used_fallback': False, 'invalid_logs': ['output\\\\architect_logs\\\\retry_then_valid_attempt_1_invalid_20260727T093039Z.json'], 'normalization_logs': [], 'validation_error': None}",
           "evidence": {
             "calls": 2,
             "result": {
@@ -1033,7 +1049,7 @@
               },
               "used_fallback": false,
               "invalid_logs": [
-                "output\\architect_logs\\retry_then_valid_attempt_1_invalid_20260719T112344Z.json"
+                "output\\architect_logs\\retry_then_valid_attempt_1_invalid_20260727T093039Z.json"
               ],
               "normalization_logs": [],
               "validation_error": null
@@ -1045,7 +1061,7 @@
           "check_id": "fallback_after_two_invalid",
           "status": "PASS",
           "expected": "Two invalid responses produce logged fallback",
-          "actual": "{'brief': {'title': 'Fallback after invalid', 'in_scope': ['Implement exactly this request: Fallback after invalid'], 'out_of_scope': ['Anything not explicitly required by the feature request', 'External services, persistence, deployment, or UI unless explicitly requested'], 'acceptance_criteria': ['Generated artifact is written to disk', 'Generated artifact passes Reviewer', 'Generated artifact parses as valid Python', 'Implementation directly addresses: Fallback after invalid']}, 'decision': {'proceed': True, 'escalate': False, 'interrupt_level': 'none', 'reason': None, 'on_escalate': None}, 'used_fallback': True, 'invalid_logs': ['output\\\\architect_logs\\\\fallback_after_invalid_attempt_1_invalid_20260719T112344Z.json', 'output\\\\architect_logs\\\\fallback_after_invalid_attempt_2_invalid_20260719T112344Z.json'], 'normalization_logs': [], 'fallback_log': 'output\\\\architect_logs\\\\fallback_after_invalid_attempt_3_fallback_20260719T112344Z.json', 'validation_error': 'missing required key(s): out_of_scope, acceptance_criteria'}",
+          "actual": "{'brief': {'title': 'Fallback after invalid', 'in_scope': ['Implement exactly this request: Fallback after invalid'], 'out_of_scope': ['Anything not explicitly required by the feature request', 'External services, persistence, deployment, or UI unless explicitly requested'], 'acceptance_criteria': ['Generated artifact is written to disk', 'Generated artifact passes Reviewer', 'Generated artifact parses as valid Python', 'Implementation directly addresses: Fallback after invalid']}, 'decision': {'proceed': True, 'escalate': False, 'interrupt_level': 'none', 'reason': None, 'on_escalate': None}, 'used_fallback': True, 'invalid_logs': ['output\\\\architect_logs\\\\fallback_after_invalid_attempt_1_invalid_20260727T093039Z.json', 'output\\\\architect_logs\\\\fallback_after_invalid_attempt_2_invalid_20260727T093039Z.json'], 'normalization_logs': [], 'fallback_log': 'output\\\\architect_logs\\\\fallback_after_invalid_attempt_3_fallback_20260727T093039Z.json', 'validation_error': 'missing required key(s): out_of_scope, acceptance_criteria'}",
           "evidence": {
             "calls": 2,
             "result": {
@@ -1074,11 +1090,11 @@
               },
               "used_fallback": true,
               "invalid_logs": [
-                "output\\architect_logs\\fallback_after_invalid_attempt_1_invalid_20260719T112344Z.json",
-                "output\\architect_logs\\fallback_after_invalid_attempt_2_invalid_20260719T112344Z.json"
+                "output\\architect_logs\\fallback_after_invalid_attempt_1_invalid_20260727T093039Z.json",
+                "output\\architect_logs\\fallback_after_invalid_attempt_2_invalid_20260727T093039Z.json"
               ],
               "normalization_logs": [],
-              "fallback_log": "output\\architect_logs\\fallback_after_invalid_attempt_3_fallback_20260719T112344Z.json",
+              "fallback_log": "output\\architect_logs\\fallback_after_invalid_attempt_3_fallback_20260727T093039Z.json",
               "validation_error": "missing required key(s): out_of_scope, acceptance_criteria"
             }
           },
@@ -1180,7 +1196,7 @@
           "check_id": "project_context_utf8_logging",
           "status": "PASS",
           "expected": "PROJECT_CONTEXT logs Unicode",
-          "actual": ":44+00:00] FAILED at reviewer: Verify gating reviewer fail - Reviewer blocked generated code with 2 blocking issue(s). -> output\\valid_review.md\n- [2026-07-19T11:23:44+00:00] PROJECT_CONTEXT unicode \ud83d\ude80",
+          "actual": ":39+00:00] FAILED at reviewer: Verify gating reviewer fail - Reviewer blocked generated code with 2 blocking issue(s). -> output\\valid_review.md\n- [2026-07-27T09:30:39+00:00] PROJECT_CONTEXT unicode \ud83d\ude80",
           "evidence": {},
           "artifact_paths": []
         }
@@ -1213,7 +1229,7 @@
             "action": "BLOCKED",
             "operation": "write",
             "originating_department": "developer",
-            "timestamp": "2026-07-19T11:23:44.682209+00:00",
+            "timestamp": "2026-07-27T09:30:39.803046+00:00",
             "policy_decision": {
               "proceed": false,
               "escalate": true,
@@ -1240,7 +1256,7 @@
             "action": "BLOCKED",
             "operation": "write",
             "originating_department": "developer",
-            "timestamp": "2026-07-19T11:23:44.692679+00:00",
+            "timestamp": "2026-07-27T09:30:39.812978+00:00",
             "policy_decision": {
               "proceed": false,
               "escalate": true,
@@ -1267,7 +1283,7 @@
             "action": "BLOCKED",
             "operation": "write",
             "originating_department": "developer",
-            "timestamp": "2026-07-19T11:23:44.702746+00:00",
+            "timestamp": "2026-07-27T09:30:39.822526+00:00",
             "policy_decision": {
               "proceed": false,
               "escalate": true,
@@ -1294,7 +1310,7 @@
             "action": "BLOCKED",
             "operation": "write",
             "originating_department": "developer",
-            "timestamp": "2026-07-19T11:23:44.712743+00:00",
+            "timestamp": "2026-07-27T09:30:39.831594+00:00",
             "policy_decision": {
               "proceed": false,
               "escalate": true,
@@ -1321,7 +1337,7 @@
             "action": "BLOCKED",
             "operation": "write",
             "originating_department": "developer",
-            "timestamp": "2026-07-19T11:23:44.722661+00:00",
+            "timestamp": "2026-07-27T09:30:39.841160+00:00",
             "policy_decision": {
               "proceed": false,
               "escalate": true,
@@ -1348,7 +1364,7 @@
             "action": "BLOCKED",
             "operation": "write",
             "originating_department": "filesystem_safety_suite",
-            "timestamp": "2026-07-19T11:23:44.732281+00:00",
+            "timestamp": "2026-07-27T09:30:39.852477+00:00",
             "policy_decision": {
               "proceed": false,
               "escalate": true,
@@ -1375,7 +1391,7 @@
             "action": "BLOCKED",
             "operation": "write",
             "originating_department": "filesystem_safety_suite",
-            "timestamp": "2026-07-19T11:23:44.743251+00:00",
+            "timestamp": "2026-07-27T09:30:39.861974+00:00",
             "policy_decision": {
               "proceed": false,
               "escalate": true,
@@ -1398,11 +1414,11 @@
             "reason_code": "duplicate_collision",
             "path": "output\\duplicate_output_folder.py",
             "attempted_path": "output\\duplicate_output_folder.py",
-            "normalized_analysis": "C:\\Users\\ajagg\\.codex\\visualizations\\2026\\07\\19\\019f799d-596c-7253-a8f7-d6aeaab80b90\\harness_v041_dod_final\\output\\duplicate_output_folder.py",
+            "normalized_analysis": "C:\\Users\\ajagg\\AppData\\Local\\Temp\\ak_labs_validation_fm20e1ed\\output\\duplicate_output_folder.py",
             "action": "BLOCKED",
             "operation": "write",
             "originating_department": "developer",
-            "timestamp": "2026-07-19T11:23:44.759016+00:00",
+            "timestamp": "2026-07-27T09:30:39.877878+00:00",
             "policy_decision": {
               "proceed": false,
               "escalate": true,
@@ -1590,7 +1606,7 @@
       "artifacts": [
         {
           "type": "example_work_order",
-          "path": "C:\\Users\\ajagg\\.codex\\visualizations\\2026\\07\\19\\019f799d-596c-7253-a8f7-d6aeaab80b90\\harness_v041_dod_final\\work_orders\\example_work_order.json",
+          "path": "C:\\Users\\ajagg\\AppData\\Local\\Temp\\ak_labs_validation_fm20e1ed\\work_orders\\example_work_order.json",
           "sha256": null,
           "description": "Canonical Work Order JSON example"
         }
@@ -1598,24 +1614,75 @@
       "evidence": {},
       "failures": [],
       "warnings": []
+    },
+    {
+      "suite_id": "etp_integration",
+      "status": "PASS",
+      "required": true,
+      "started_at": null,
+      "duration_ms": 0,
+      "checks": [
+        {
+          "check_id": "etp_clean_run",
+          "status": "PASS",
+          "expected": "Clean pipeline records 4 consecutive ACCEPTED transactions",
+          "actual": "[1, 2, 3, 4]",
+          "evidence": {},
+          "artifact_paths": []
+        },
+        {
+          "check_id": "etp_linkage",
+          "status": "PASS",
+          "expected": "Pipeline transactions contain correct previous_transaction_id linkage",
+          "actual": "linked correctly",
+          "evidence": {},
+          "artifact_paths": []
+        },
+        {
+          "check_id": "etp_rejected_run",
+          "status": "PASS",
+          "expected": "Failed pipeline explicitly records a REJECTED transaction with unchanged ownership",
+          "actual": "(2, 'REJECTED')",
+          "evidence": {},
+          "artifact_paths": []
+        }
+      ],
+      "artifacts": [],
+      "evidence": {},
+      "failures": [],
+      "warnings": []
+    },
+    {
+      "suite_id": "repo_intelligence",
+      "status": "ERROR",
+      "required": true,
+      "started_at": null,
+      "duration_ms": 0,
+      "checks": [],
+      "artifacts": [],
+      "evidence": {},
+      "failures": [
+        "AttributeError(\"type object 'RepositoryType' has no attribute 'MONOREPO'\")"
+      ],
+      "warnings": []
     }
   ],
   "artifacts": [
     {
       "type": "stdout",
-      "path": "C:\\Users\\ajagg\\.codex\\visualizations\\2026\\07\\19\\019f799d-596c-7253-a8f7-d6aeaab80b90\\harness_v041_dod_final\\mock_pipeline\\stdout.txt",
+      "path": "C:\\Users\\ajagg\\AppData\\Local\\Temp\\ak_labs_validation_fm20e1ed\\mock_pipeline\\stdout.txt",
       "sha256": null,
       "description": "Mock pipeline stdout"
     },
     {
       "type": "example_work_order",
-      "path": "C:\\Users\\ajagg\\.codex\\visualizations\\2026\\07\\19\\019f799d-596c-7253-a8f7-d6aeaab80b90\\harness_v041_dod_final\\work_orders\\example_work_order.json",
+      "path": "C:\\Users\\ajagg\\AppData\\Local\\Temp\\ak_labs_validation_fm20e1ed\\work_orders\\example_work_order.json",
       "sha256": null,
       "description": "Canonical Work Order JSON example"
     }
   ],
   "summary": {
-    "passed": 13,
+    "passed": 14,
     "failed": 0,
     "not_tested": 0,
     "warnings": 0

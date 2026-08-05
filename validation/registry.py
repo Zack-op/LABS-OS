@@ -1,14 +1,11 @@
 from __future__ import annotations
-
 from dataclasses import dataclass
-
 
 @dataclass(frozen=True)
 class SuiteSpec:
     suite_id: str
     module: str
     required: bool = True
-
 
 SUITES = [
     SuiteSpec("environment", "validation.suites.environment"),
@@ -24,8 +21,11 @@ SUITES = [
     SuiteSpec("project_context", "validation.suites.project_context"),
     SuiteSpec("filesystem_safety", "validation.suites.filesystem_safety"),
     SuiteSpec("work_orders", "validation.suites.work_orders"),
+    SuiteSpec("etp_integration", "validation.suites.etp_integration"),
+    SuiteSpec("repo_intelligence", "validation.suites.repo_intelligence"),
+    SuiteSpec("file_selection", "validation.suites.file_selection"),    # NEW
+    SuiteSpec("context_builder", "validation.suites.context_builder"),  # NEW
 ]
-
 
 COMMAND_SUITES = {
     "release": [spec.suite_id for spec in SUITES],
@@ -38,16 +38,18 @@ COMMAND_SUITES = {
         "verify_gating",
         "project_context",
         "work_orders",
+        "etp_integration",
+        "repo_intelligence",
+        "file_selection",    # NEW
+        "context_builder",
     ],
     "adversarial": ["reviewer_adversarial"],
     "dod": [spec.suite_id for spec in SUITES],
 }
 
-
 def get_suite_specs(command: str) -> list[SuiteSpec]:
     wanted = set(COMMAND_SUITES[command])
     return [spec for spec in SUITES if spec.suite_id in wanted]
-
 
 def get_suite_spec(suite_id: str) -> SuiteSpec:
     for spec in SUITES:
