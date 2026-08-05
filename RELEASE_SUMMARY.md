@@ -321,3 +321,107 @@ Expected constraints:
 - [CHANGELOG.md](CHANGELOG.md)
 - [PROJECT_STATUS.md](PROJECT_STATUS.md)
 - [RELEASE_NOTES_v0.4.3.md](RELEASE_NOTES_v0.4.3.md)
+
+## Release Validation Harness Run - 2026-08-05T10:52:32+00:00
+
+- Command: `release`
+- Profile: `release`
+- Overall status: FAIL
+- Exit code: 1
+- Readiness score: 65/100
+- Suggested version: v0.0.0
+- JSON report: `D:\ak_labs_os\reports\history\release-20260805T105228Z.json`
+- Markdown report: `D:\ak_labs_os\reports\history\release-20260805T105228Z.md`
+- Failed required suites: mock_pipeline, utf8_artifacts, filesystem_safety, etp_integration, repo_intelligence, file_selection
+
+
+## Release Validation Harness Run - deterministic
+
+- Command: `release`
+- Profile: `release`
+- Overall status: FAIL
+- Exit code: 1
+- Readiness score: 59/100
+- Suggested version: v0.0.0
+- JSON report: `D:\ak_labs_os\reports\history\deterministic-release.json`
+- Markdown report: `D:\ak_labs_os\reports\history\deterministic-release.md`
+- Failed required suites: mock_pipeline, utf8_artifacts, verify_gating, filesystem_safety, etp_integration, repo_intelligence, file_selection
+
+
+## Release Validation Harness Run - 2026-08-05T11:04:25+00:00
+
+- Command: `release`
+- Profile: `release`
+- Overall status: FAIL
+- Exit code: 1
+- Readiness score: 59/100
+- Suggested version: v0.0.0
+- JSON report: `D:\ak_labs_os\reports\history\release-20260805T110424Z.json`
+- Markdown report: `D:\ak_labs_os\reports\history\release-20260805T110424Z.md`
+- Failed required suites: mock_pipeline, utf8_artifacts, verify_gating, filesystem_safety, etp_integration, repo_intelligence, file_selection
+
+
+## Release Validation Harness Run - deterministic
+
+- Command: `release`
+- Profile: `release`
+- Overall status: FAIL
+- Exit code: 1
+- Readiness score: 59/100
+- Suggested version: v0.0.0
+- JSON report: `D:\ak_labs_os\reports\history\deterministic-release.json`
+- Markdown report: `D:\ak_labs_os\reports\history\deterministic-release.md`
+- Failed required suites: mock_pipeline, utf8_artifacts, verify_gating, filesystem_safety, etp_integration, repo_intelligence, file_selection
+
+
+## Release Validation Harness Run - deterministic
+
+- Command: `release`
+- Profile: `release`
+- Overall status: FAIL
+- Exit code: 1
+- Readiness score: 59/100
+- Suggested version: v0.0.0
+- JSON report: `D:\ak_labs_os\reports\history\deterministic-release.json`
+- Markdown report: `D:\ak_labs_os\reports\history\deterministic-release.md`
+- Failed required suites: mock_pipeline, utf8_artifacts, verify_gating, filesystem_safety, etp_integration, repo_intelligence, file_selection
+
+
+## Release Validation Harness Run - deterministic
+
+- Command: `release`
+- Profile: `release`
+- Overall status: FAIL
+- Exit code: 1
+- Readiness score: 59/100
+- Suggested version: v0.0.0
+- JSON report: `D:\ak_labs_os\reports\history\deterministic-release.json`
+- Markdown report: `D:\ak_labs_os\reports\history\deterministic-release.md`
+- Failed required suites: mock_pipeline, utf8_artifacts, verify_gating, filesystem_safety, etp_integration, repo_intelligence, file_selection
+
+
+## Release Validation Harness Run - deterministic
+
+- Command: `release`
+- Profile: `release`
+- Overall status: FAIL
+- Exit code: 1
+- Readiness score: 59/100
+- Suggested version: v0.0.0
+- JSON report: `D:\ak_labs_os\reports\history\deterministic-release.json`
+- Markdown report: `D:\ak_labs_os\reports\history\deterministic-release.md`
+- Failed required suites: mock_pipeline, utf8_artifacts, verify_gating, filesystem_safety, etp_integration, repo_intelligence, file_selection
+
+
+## Release Validation Harness Run - deterministic
+
+- Command: `release`
+- Profile: `release`
+- Overall status: FAIL
+- Exit code: 1
+- Readiness score: 65/100
+- Suggested version: v0.0.0
+- JSON report: `D:\ak_labs_os\reports\history\deterministic-release.json`
+- Markdown report: `D:\ak_labs_os\reports\history\deterministic-release.md`
+- Failed required suites: mock_pipeline, utf8_artifacts, filesystem_safety, etp_integration, repo_intelligence, file_selection
+
