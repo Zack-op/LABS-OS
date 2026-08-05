@@ -1,58 +1,52 @@
 # Engineering Guide
 
-Start with [START_HERE.md](../START_HERE.md). For architecture, read
-[ARCHITECTURE.md](ARCHITECTURE.md). For durable decisions, read
-[DECISIONS.md](DECISIONS.md).
+Start with [../START_HERE.md](../START_HERE.md). For the canonical ownership
+model, read [../ARCHITECTURE.md](../ARCHITECTURE.md). For architectural
+decisions, read [DECISIONS.md](DECISIONS.md).
 
 ## Engineering Principles
 
-AK Labs OS is optimized for organizational reliability before coding power.
-
-Default rules:
-
-- preserve architectural intent unless the milestone explicitly requires a
-  change
-- keep departments single-purpose
-- keep policies free of model IDs
-- prefer deterministic behavior
-- reject unsafe filesystem paths instead of repairing them
-- validate every claim with the Release Validation Harness
-- document architectural decisions in [DECISIONS.md](DECISIONS.md)
-- preserve the canonical owner for each engineering concern
+- Preserve architectural intent unless the active milestone explicitly requires
+  a change.
+- Keep each department single-purpose.
+- Keep policies free of model IDs.
+- Prefer deterministic behavior and replayable evidence.
+- Reject unsafe filesystem paths instead of repairing them.
+- Validate claims through the Release Validation Harness.
+- Record architectural decisions as ADRs.
+- Keep runtime execution separate from release validation infrastructure.
 
 ## Local Setup
 
-```bash
+```powershell
 python -m venv .venv
 .venv\Scripts\python -m pip install -r requirements.txt
 copy .env.example .env
 ```
 
-`GROQ_API_KEY` is optional for mock mode. Live mode depends on operator-supplied
-provider keys.
+Provider keys are operator configuration. Mock mode does not require live LLM
+credentials.
 
 ## Running the Pipeline
 
 Mock mode:
 
-```bash
+```powershell
 python orchestrator.py "Build a function that validates an email address" --mock
 ```
 
 Live mode:
 
-```bash
+```powershell
 python orchestrator.py "Build a function that reverses a string"
 ```
 
-Mock mode is the normal path for validating pipeline mechanics without external
-model calls.
-
 ## Validation Workflow
 
-Run focused checks first when touching a subsystem. Then run aggregate gates.
+Run focused checks first when changing a subsystem. Run aggregate gates before
+release handoff.
 
-```bash
+```powershell
 python -m validation.cli release --deterministic
 python -m validation.cli regression --deterministic
 python -m validation.cli adversarial --deterministic
@@ -65,89 +59,93 @@ Reports:
 - `reports/latest.md`
 - `reports/history/`
 
-Expected behavior:
-
-- `release` and `dod` must pass before a milestone is considered releasable
-- `regression` protects known historical defects
-- `adversarial` focuses on intentionally hostile Reviewer cases
-
-Do not weaken a validation suite to make a change pass. Fix the defect or mark
-the limitation honestly.
+Do not weaken validation to pass a release. Fix the defect or record the
+blocker.
 
 ## Repository Layout
 
-Runtime:
+Runtime and governance:
 
-- `orchestrator.py` - current department pipeline
-- `policy_engine.py` - policy loading, evaluation, and audit logging
-- `historian.py` - organizational memory tables and queries
-- `safe_artifact_writer.py` - approved artifact mutation layer
+- `orchestrator.py` - workflow coordination only
+- `policy_engine.py` - policy evaluation
+- `historian.py` - persistent engineering memory
+- `safe_artifact_writer.py` - artifact mutation and filesystem safety
 - `capability_router.py` - capability to provider/model resolution
-- `llm_router.py` - model call routing and mock mode
-- `dev_tools.py` - manual verification helpers
+- `llm_router.py` - model call routing and mock execution
 
-Configuration:
+Engineering organization packages:
 
-- `policies.yaml` - policy definitions
-- `capabilities.yaml` - provider/model bindings
-- `culture.yaml` - engineering culture seed
-- `.env.example` - optional provider key template
-- `requirements.txt` - pinned runtime dependencies
-
-Domain model:
-
-- `work_orders/` - Work Order schema, lifecycle, validation, serialization,
-  and manager
+- `work_orders/` - Work Order schema, IDs, lifecycle, contracts, persistence
+- `repository_intelligence/` - scanning, profiles, dependency graph, indexes
+- `file_selection/` - file reasoning, traces, confidence, escalation
+- `context_builder/` - `EngineeringContext` packaging
+- `etp/` - ownership transfer records and validation
 
 Release infrastructure:
 
 - `validation/` - validation harness and suites
 - `reporters/` - JSON and Markdown report writers
-- `reports/` - generated validation reports
+- `reports/` - generated validation evidence
 
 Documentation:
 
 - `START_HERE.md`
+- `ARCHITECTURE.md`
 - `docs/`
-- `RELEASE_SUMMARY.md`
+- `CHANGELOG.md`
+- `PROJECT_STATUS.md`
+- `RELEASE_NOTES_v0.4.3.md`
+
+Generated Work Order artifacts:
+
+```text
+output/
+  work_orders/
+    WO-000001/
+```
 
 ## Files To Read Before Specific Changes
 
 Runtime pipeline:
 
+- `ARCHITECTURE.md`
 - `docs/ARCHITECTURE.md`
 - `orchestrator.py`
 - `policies.yaml`
 - `policy_engine.py`
-- `safe_artifact_writer.py`
 
-Policy or capability routing:
+Repository intelligence:
 
-- `docs/DECISIONS.md`
-- `policies.yaml`
-- `capabilities.yaml`
-- `capability_router.py`
-- `llm_router.py`
+- `repository_intelligence/scanner.py`
+- `repository_intelligence/intelligence.py`
+- `repository_intelligence/models.py`
+- `validation/suites/repo_intelligence.py`
 
-Historian:
+File selection:
 
-- `historian.py`
-- `policy_engine.py`
-- `RELEASE_SUMMARY.md`
+- `file_selection/engine.py`
+- `file_selection/rules.py`
+- `file_selection/models.py`
+- `validation/suites/file_selection.py`
+
+Context building:
+
+- `context_builder/builder.py`
+- `context_builder/models.py`
+- `validation/suites/context_builder.py`
+
+Work Orders and ownership:
+
+- `work_orders/`
+- `etp/`
+- `handoffs/CONTRACT.md`
+- `docs/ADR/`
 
 Filesystem safety:
 
 - `safe_artifact_writer.py`
-- `validation/suites/filesystem_safety.py`
 - `policies.yaml`
-
-Work Orders:
-
-- `work_orders/schema.py`
-- `work_orders/models.py`
-- `work_orders/lifecycle.py`
-- `work_orders/validator.py`
-- `validation/suites/work_orders.py`
+- `validation/suites/filesystem_safety.py`
 
 Release validation:
 
@@ -155,27 +153,11 @@ Release validation:
 - `validation/runner.py`
 - `validation/dod.py`
 - `validation/suites/`
-
-## Adding or Changing Behavior
-
-Before editing:
-
-1. Identify the milestone objective.
-2. Confirm whether runtime behavior is allowed to change.
-3. Read the relevant decisions in [DECISIONS.md](DECISIONS.md).
-4. Add or update validation only when the milestone requires it.
-5. Keep edits scoped to the subsystem.
-
-After editing:
-
-1. Run focused validation.
-2. Run aggregate validation.
-3. Update `RELEASE_SUMMARY.md` only for release-relevant evidence.
-4. Add an ADR if architectural intent changed.
+- `docs/validation.md`
 
 ## Safe Artifact Rules
 
-Runtime project-artifact mutation should go through `SafeArtifactWriter`.
+Runtime artifact mutation should go through `SafeArtifactWriter`.
 
 Unsafe operations must be blocked and recorded:
 
@@ -191,50 +173,25 @@ The writer rejects unsafe paths. It does not silently normalize them.
 
 ## Work Order Rules
 
-Work Orders are implemented but not yet mandatory at runtime.
+Work Orders are the canonical task-state objects. They carry deterministic
+identity, lifecycle, acceptance criteria, deliverables, constraints, ownership
+metadata, and contract fields.
 
-Current status:
+Do not change the schema, lifecycle, identity model, or workspace ownership
+without a milestone requirement and ADR.
 
-- available as a standalone domain model
-- validated by the release harness
-- JSON serialization implemented
-- YAML reserved for future support
+## ETP Rules
 
-Do not force Work Orders into the orchestrator unless the active milestone
-explicitly requires runtime integration.
+Engineering Transaction Protocol owns ownership transfer between departments.
+It does not own Work Order state, Historian persistence, validation
+correctness, policy decisions, or artifact persistence.
 
-## Engineering Transaction Protocol Rules
-
-The Engineering Transaction Protocol is planned as v0.4.2 Department Handoff
-Infrastructure.
-
-Current status:
-
-- planned architecture only
-- not implemented
-- not part of runtime behavior
-- documented in [ARCHITECTURE.md](ARCHITECTURE.md) and
-  [DECISIONS.md](DECISIONS.md)
-
-ETP must own ownership-transfer behavior only. It must not become the owner of
-Work Order schema, Historian records, validation results, policy decisions, or
-artifact persistence.
-
-## Architecture Freeze Rules
-
-Architecture is approved before implementation. Implementation follows the
-approved architecture.
-
-Architectural changes require an ADR. Implementation must not silently redefine
-architecture, department ownership, subsystem boundaries, or canonical sources
-of truth.
+Transfer evidence must be explicit and replayable.
 
 ## Documentation Rules
 
-Keep documentation honest:
-
-- separate implemented behavior from planned behavior
-- do not describe aspirational features as shipped
-- cross-reference canonical docs
-- add ADRs for architecture decisions
-- update roadmap after release milestones
+- Describe implemented behavior as implemented.
+- Describe planned behavior only in the roadmap.
+- Keep subsystem terminology consistent with [../ARCHITECTURE.md](../ARCHITECTURE.md).
+- Update ADRs when architecture changes.
+- Update release notes and changelog for release-level changes.

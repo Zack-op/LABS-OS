@@ -21,19 +21,17 @@ class ETPTracker:
         destination_department: str, 
         intent: TransferIntent | str, 
         reason: str, 
-        reject_reason: str | None = None
+        reject_reason: str | None = None,
+        deliverable_refs: list[str] | None = None
     ) -> TransactionRecord:
-        """
-        Constructs and evaluates a transfer. If a reject_reason is provided, 
-        the transfer is recorded as REJECTED.
-        """
         self.sequence_number += 1
         transaction_id = f"TX-{work_order_id}-{self.sequence_number:03d}"
         
         evidence = EvidencePackage(
             work_order_ref=work_order_id,
             completion_statement=f"{current_department} phase complete",
-            readiness_basis=f"{destination_department} ready to receive" if not reject_reason else "Blocked by pipeline policy"
+            readiness_basis=f"{destination_department} ready to receive" if not reject_reason else "Blocked by pipeline policy",
+            deliverable_refs=deliverable_refs or []
         )
         
         tx = evaluate_transfer(

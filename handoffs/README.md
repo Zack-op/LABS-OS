@@ -1,21 +1,22 @@
 # Engineering Transaction Protocol
 
-The Engineering Transaction Protocol (ETP) is the planned Department Handoff
-Infrastructure for AK Labs OS.
+The Engineering Transaction Protocol (ETP) is the ownership-transfer protocol
+for AK Labs OS departments.
 
-This directory defines the protocol contract only. It does not contain runtime
-code, validation code, persistence code, or implementation details.
+This directory contains the protocol documentation. Runtime domain structures
+live in `etp/`, and validation coverage lives in
+`validation/suites/etp_integration.py`.
 
 Read [CONTRACT.md](CONTRACT.md) for the canonical protocol contract.
 
 ## Purpose
 
-ETP exists to make department handoffs explicit, deterministic, auditable, and
+ETP makes department handoffs explicit, deterministic, auditable, and
 replayable.
 
 In AK Labs OS, a department should not informally pass work to another
-department through loose prompts or implicit state. A handoff should be a
-structured transaction around one Work Order.
+department through loose prompts or implicit state. A handoff is a structured
+transaction around one Work Order.
 
 ## Goals
 
@@ -25,7 +26,7 @@ structured transaction around one Work Order.
 - preserve Validation Harness as the canonical validation authority
 - preserve Policy Engine as the canonical governance authority
 - support deterministic replay of department handoffs
-- support future departments without redesigning ownership boundaries
+- support new departments without redesigning ownership boundaries
 
 ## Relationship To Work Orders
 
@@ -41,15 +42,15 @@ owner to another.
 
 Historian owns audit history.
 
-ETP should produce transaction records that Historian can persist when runtime
-implementation begins. Historian records the transfer history; it does not
-decide whether a transfer is valid.
+ETP produces transaction records that Historian can persist as audit evidence.
+Historian records the transfer history; it does not decide whether a transfer is
+valid.
 
 ## Relationship To Validation
 
 The Validation Harness owns correctness checks.
 
-Future ETP validation should prove transfer determinism, single active owner
+ETP integration validation proves transfer determinism, single active owner
 behavior, invalid transfer rejection, evidence completeness, and replayability.
 ETP does not own validation results.
 
@@ -69,19 +70,17 @@ ETP may reference artifacts produced by departments, but it does not write,
 rename, delete, or persist project artifacts. Artifact mutation remains behind
 Safe Artifact Writer.
 
-## Planned Implementation Phases
+## Implementation Status
 
-1. Contract: define the implementation-independent protocol contract.
-2. Specification: define transaction envelope, validation cases, and storage
-   expectations without changing runtime behavior.
-3. Domain implementation: add ETP data structures and validation in isolation.
-4. Runtime integration: make department handoffs use ETP once Work Order
-   integration is explicitly in scope.
-5. Historian integration: persist accepted and rejected transactions as audit
-   history.
+- Protocol contract: complete
+- Domain implementation: present in `etp/`
+- Validation coverage: present in `validation/suites/etp_integration.py`
+- Work Order relationship: established through Work Order IDs
+- Historian relationship: ETP records are audit evidence; Historian remains the
+  audit owner
 
-Each phase must preserve ADR-0012: Work Orders own engineering state, ETP owns
-ownership transfer, and Historian owns audit history.
+Each implementation must preserve ADR-0012: Work Orders own engineering state,
+ETP owns ownership transfer, and Historian owns audit history.
 
 ## Directory Overview
 
@@ -90,5 +89,3 @@ handoffs/
   README.md    Overview and contributor entry point
   CONTRACT.md  Canonical Engineering Transaction Protocol contract
 ```
-
-No executable files belong in this directory during the contract sprint.

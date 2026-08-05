@@ -45,6 +45,9 @@ class RiskLevel(StringEnum):
 class Department(StringEnum):
     ARCHITECT = "Architect"
     DEVELOPER = "Developer"
+    REPOSITORY_INTELLIGENCE = "Repository Intelligence"
+    FILE_SELECTION = "File Selection"
+    CONTEXT_BUILDER = "Context Builder"
     REVIEWER = "Reviewer"
     VALIDATOR = "Validator"
     HISTORIAN = "Historian"

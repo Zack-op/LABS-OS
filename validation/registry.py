@@ -23,6 +23,8 @@ SUITES = [
     SuiteSpec("work_orders", "validation.suites.work_orders"),
     SuiteSpec("etp_integration", "validation.suites.etp_integration"),
     SuiteSpec("repo_intelligence", "validation.suites.repo_intelligence"),
+    SuiteSpec("file_selection", "validation.suites.file_selection"),    # NEW
+    SuiteSpec("context_builder", "validation.suites.context_builder"),  # NEW
 ]
 
 COMMAND_SUITES = {
@@ -38,6 +40,8 @@ COMMAND_SUITES = {
         "work_orders",
         "etp_integration",
         "repo_intelligence",
+        "file_selection",    # NEW
+        "context_builder",
     ],
     "adversarial": ["reviewer_adversarial"],
     "dod": [spec.suite_id for spec in SUITES],

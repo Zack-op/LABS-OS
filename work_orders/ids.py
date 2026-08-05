@@ -1,37 +1,34 @@
-from __future__ import annotations
-
 import re
+from typing import Optional
+from work_orders.state import CounterStore
 
+def validate_work_order_id(wo_id: str) -> bool:
+    """
+    Validates that a string matches the canonical Work Order ID format.
+    Expected format: WO-XXXXXX (e.g., WO-000001)
+    """
+    if not isinstance(wo_id, str):
+        return False
+    return bool(re.fullmatch(r"^WO-\d{6}$", wo_id))
 
-WORK_ORDER_ID_PATTERN = re.compile(r"^WO-\d{6}$")
-
-
-def validate_work_order_id(work_order_id: str) -> bool:
-    return bool(WORK_ORDER_ID_PATTERN.fullmatch(work_order_id))
-
-
-def parse_work_order_number(work_order_id: str) -> int:
-    if not validate_work_order_id(work_order_id):
-        raise ValueError(f"invalid work order id: {work_order_id}")
-    return int(work_order_id.split("-", 1)[1])
-
+def parse_work_order_number(wo_id: str) -> int:
+    """
+    Extracts the sequence number from a canonical Work Order ID.
+    Raises ValueError if the ID format is invalid.
+    """
+    if not validate_work_order_id(wo_id):
+        raise ValueError(f"Invalid Work Order ID format: {wo_id}")
+    return int(wo_id.split("-")[1])
 
 class WorkOrderIdGenerator:
-    def __init__(self, start: int = 1):
-        if start < 1:
-            raise ValueError("Work Order IDs start at 1")
-        self._next = start
+    """
+    Domain logic for generating deterministic, strictly monotonic 
+    Work Order IDs across independent Python executions.
+    """
+    def __init__(self, store: Optional[CounterStore] = None):
+        self.store = store or CounterStore()
 
-    def next_id(self) -> str:
-        value = f"WO-{self._next:06d}"
-        self._next += 1
-        return value
-
-    def reserve(self, work_order_id: str) -> None:
-        number = parse_work_order_number(work_order_id)
-        if number >= self._next:
-            self._next = number + 1
-
-    @property
-    def next_number(self) -> int:
-        return self._next
+    def generate(self) -> str:
+        seq = self.store.load()
+        self.store.save(seq + 1)
+        return f"WO-{seq:06d}"

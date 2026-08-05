@@ -3,6 +3,14 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
 
+class AssetClass(str, Enum):
+    ENGINEERING = "ENGINEERING"
+    GENERATED = "GENERATED"
+    TEMP = "TEMP"
+
+    def __str__(self) -> str:
+        return self.value
+
 class FileCategory(str, Enum):
     SOURCE = "SOURCE"
     TEST = "TEST"
@@ -35,6 +43,33 @@ class RepositoryType(str, Enum):
     def __str__(self) -> str:
         return self.value
 
+class RelationshipType(str, Enum):
+    IMPORT = "IMPORT"
+    INHERITS = "INHERITS"
+    IMPLEMENTS = "IMPLEMENTS"
+    CALLS = "CALLS"
+    CONFIG_REFERENCE = "CONFIG_REFERENCE"
+    TEMPLATE_REFERENCE = "TEMPLATE_REFERENCE"
+    SQL_REFERENCE = "SQL_REFERENCE"
+    ROUTE_REGISTRATION = "ROUTE_REGISTRATION"
+    DEPENDENCY_INJECTION = "DEPENDENCY_INJECTION"
+
+    def __str__(self) -> str:
+        return self.value
+
+@dataclass(frozen=True)
+class DependencyEdge:
+    source: str
+    target: str
+    relationship: RelationshipType
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "source": self.source,
+            "target": self.target,
+            "relationship": self.relationship.value
+        }
+
 @dataclass(frozen=True)
 class RepositoryNode:
     relative_path: str
@@ -60,6 +95,7 @@ class RepositoryFile(RepositoryNode):
     is_binary: bool
     language: str | None
     category: FileCategory
+    asset_class: AssetClass = AssetClass.ENGINEERING
 
     def to_dict(self) -> dict[str, Any]:
         base = super().to_dict()
@@ -70,6 +106,7 @@ class RepositoryFile(RepositoryNode):
             "is_binary": self.is_binary,
             "language": self.language,
             "category": self.category.value,
+            "asset_class": getattr(self.asset_class, "value", self.asset_class),
         })
         return base
 
@@ -188,11 +225,19 @@ class RepositoryProfile:
     documentation: list[str]
     infrastructure: list[str]
     
-    # Deterministic Lookup Indexes
+    dependency_edges: list[DependencyEdge] = field(default_factory=list)
+    dependency_index: dict[str, list[str]] = field(default_factory=dict)
+    
+    module_to_file: dict[str, str] = field(default_factory=dict)
+    file_to_module: dict[str, str] = field(default_factory=dict)
+    module_aliases: dict[str, str] = field(default_factory=dict)
+    centrality_metrics: dict[str, float] = field(default_factory=dict)
+    
     files_by_extension: dict[str, list[str]] = field(default_factory=dict)
     files_by_language: dict[str, list[str]] = field(default_factory=dict)
     files_by_category: dict[str, list[str]] = field(default_factory=dict)
     files_by_directory: dict[str, list[str]] = field(default_factory=dict)
+    files_by_asset_class: dict[str, list[str]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -208,10 +253,17 @@ class RepositoryProfile:
             "configs": self.configs,
             "documentation": self.documentation,
             "infrastructure": self.infrastructure,
+            "dependency_edges": [edge.to_dict() for edge in self.dependency_edges],
+            "dependency_index": dict(self.dependency_index),
+            "module_to_file": dict(self.module_to_file),
+            "file_to_module": dict(self.file_to_module),
+            "module_aliases": dict(self.module_aliases),
+            "centrality_metrics": dict(self.centrality_metrics),
             "indexes": {
                 "by_extension": dict(self.files_by_extension),
                 "by_language": dict(self.files_by_language),
                 "by_category": dict(self.files_by_category),
                 "by_directory": dict(self.files_by_directory),
+                "by_asset_class": dict(self.files_by_asset_class),
             }
         }

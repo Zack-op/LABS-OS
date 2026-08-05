@@ -11,9 +11,8 @@ from repository_intelligence.models import (
 )
 
 DEFAULT_IGNORED_DIRS = {
-    ".git", ".github/cache", ".venv", "venv", "node_modules", "dist", "build", 
-    "coverage", ".pytest_cache", "__pycache__", ".next", ".idea", 
-    ".vscode", ".cache", "tmp", "temp"
+    ".git", ".github/cache", ".venv", "venv", "node_modules", ".pytest_cache", 
+    "__pycache__", ".next", ".idea", ".vscode", "tmp", "temp"
 }
 
 LANGUAGE_EXTENSIONS = {
@@ -30,8 +29,6 @@ KNOWN_BINARY_EXTENSIONS = {
 }
 
 class RepositoryScanner:
-    """Deterministically walks a repository and produces a structured snapshot."""
-
     def __init__(self, ignored_dirs: set[str] | None = None):
         self.ignored_dirs = ignored_dirs or DEFAULT_IGNORED_DIRS
 
@@ -45,7 +42,6 @@ class RepositoryScanner:
             current_dir = Path(dirpath_str)
             
             original_dir_count = len(dirnames)
-            # Handle exact matches and nested exclusions (e.g., .github/cache vs .github)
             dirnames[:] = [d for d in dirnames if not self._is_ignored_dir(current_dir / d, root)]
             ignored_count += (original_dir_count - len(dirnames))
 
@@ -114,7 +110,6 @@ class RepositoryScanner:
             if mime_type.startswith("image/") or mime_type.startswith("video/") or mime_type.startswith("audio/"):
                 return True
 
-        # Deterministic lightweight byte inspection (read first 1024 bytes)
         try:
             with file_path.open("rb") as f:
                 chunk = f.read(1024)
@@ -129,27 +124,16 @@ class RepositoryScanner:
         name_lower = filename.lower()
         path_lower = f"{rel_dir}/{filename}".replace("\\", "/").lower()
 
-        if "test" in path_lower or "spec" in name_lower:
-            return FileCategory.TEST
-        if name_lower in {"package.json", "requirements.txt", "pyproject.toml", "cargo.toml", "go.mod", "pom.xml", "build.gradle", "poetry.lock", "package-lock.json"}:
-            return FileCategory.DEPENDENCY
-        if name_lower in {"dockerfile", "docker-compose.yml", "makefile"} or ext in {".tf", ".hcl"}:
-            return FileCategory.INFRA
-        if ".github/workflows" in path_lower or name_lower in {".gitlab-ci.yml", "jenkinsfile"}:
-            return FileCategory.CI_CD
-        if "migration" in path_lower or "alembic" in path_lower or name_lower.startswith("v1__"):
-            return FileCategory.MIGRATION
-        if ext in {".sql", ".sqlite"} or "schema" in name_lower:
-            return FileCategory.DATABASE
-        if ext in {".json", ".yaml", ".yml", ".toml", ".ini", ".env"} or "config" in name_lower:
-            return FileCategory.CONFIG
-        if ext in {".md", ".txt", ".rst"}:
-            return FileCategory.DOC
-        if ext in {".sh", ".bat", ".ps1"}:
-            return FileCategory.SCRIPT
-        if ext in KNOWN_BINARY_EXTENSIONS or ext in {".svg", ".woff", ".woff2"}:
-            return FileCategory.ASSET
-        if ext in LANGUAGE_EXTENSIONS and ext not in {".md", ".json", ".yaml", ".yml", ".toml"}:
-            return FileCategory.SOURCE
+        if "test" in path_lower or "spec" in name_lower: return FileCategory.TEST
+        if name_lower in {"package.json", "requirements.txt", "pyproject.toml", "cargo.toml", "go.mod", "pom.xml", "build.gradle", "poetry.lock", "package-lock.json"}: return FileCategory.DEPENDENCY
+        if name_lower in {"dockerfile", "docker-compose.yml", "makefile"} or ext in {".tf", ".hcl"}: return FileCategory.INFRA
+        if ".github/workflows" in path_lower or name_lower in {".gitlab-ci.yml", "jenkinsfile"}: return FileCategory.CI_CD
+        if "migration" in path_lower or "alembic" in path_lower or name_lower.startswith("v1__"): return FileCategory.MIGRATION
+        if ext in {".sql", ".sqlite"} or "schema" in name_lower: return FileCategory.DATABASE
+        if ext in {".json", ".yaml", ".yml", ".toml", ".ini", ".env"} or "config" in name_lower: return FileCategory.CONFIG
+        if ext in {".md", ".txt", ".rst"}: return FileCategory.DOC
+        if ext in {".sh", ".bat", ".ps1"}: return FileCategory.SCRIPT
+        if ext in KNOWN_BINARY_EXTENSIONS or ext in {".svg", ".woff", ".woff2"}: return FileCategory.ASSET
+        if ext in LANGUAGE_EXTENSIONS and ext not in {".md", ".json", ".yaml", ".yml", ".toml"}: return FileCategory.SOURCE
             
         return FileCategory.UNKNOWN

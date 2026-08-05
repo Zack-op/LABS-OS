@@ -8,7 +8,8 @@ Run (real, needs GROQ_API_KEY in .env):
     python orchestrator.py "Build a function that validates an email address"
 
 Flow:
-    Architect (scope_compile) -> Developer (generate_code) -> Reviewer
+    Architect (scope_compile) -> Repository Intelligence -> File Selection 
+    -> Context Builder -> Developer (generate_code) -> Reviewer
     -> Verify (anti-fabrication gate) -> Commit message
     -> Log everything to SQLite + PROJECT_CONTEXT.md
 
@@ -23,6 +24,7 @@ import json
 import re
 from datetime import datetime, timezone
 from pathlib import Path
+from dataclasses import asdict
 
 from policy_engine import load_policies, evaluate
 from llm_router import call_model
@@ -30,11 +32,16 @@ from safe_artifact_writer import ArtifactWriteError, SafeArtifactWriter
 from historian import record_review, record_etp_transaction
 
 # ETP and Work Order Integration Imports
-from work_orders.models import AcceptanceCriterion
+from work_orders.models import AcceptanceCriterion, WorkOrder
 from work_orders.manager import WorkOrderManager
 from work_orders.enums import Department
 from etp.enums import TransferIntent
 from etp.tracker import ETPTracker
+
+# HOI Integration Imports
+from repository_intelligence import RepositoryScanner, RepositoryIntelligence
+from file_selection import FileSelectionEngine
+from context_builder import ContextBuilder, EngineeringContext
 
 OUTPUT_DIR = Path("output")
 CONTEXT_FILE = Path("PROJECT_CONTEXT.md")
@@ -72,11 +79,6 @@ def _strip_outer_json_fence(text: str) -> tuple[str, str | None]:
 
 
 def _extract_json(text: str) -> tuple[dict, str | None]:
-    """
-    Parse Architect JSON without weakening the schema. Exact JSON is preferred.
-    If a provider leaks reasoning text, extract the final JSON object and report
-    that normalization was required.
-    """
     cleaned, fence_note = _strip_outer_json_fence(text)
     try:
         parsed = json.loads(cleaned)
@@ -217,7 +219,6 @@ def _write_architect_log(
 
 
 def architect_scope_compile(feature_request: str, policies: dict, mock: bool) -> dict:
-    """Turns a loose request into a bounded brief: in-scope / out-of-scope / acceptance criteria."""
     mock_response = json.dumps({
         "title": feature_request,
         "in_scope": [f"Implement: {feature_request}"],
@@ -314,27 +315,29 @@ def architect_scope_compile(feature_request: str, policies: dict, mock: bool) ->
     }
 
 
-def developer_generate_code(brief: dict, policies: dict, mock: bool) -> dict:
-    """Generates code for the bounded brief. Writes it to OUTPUT_DIR."""
+def developer_generate_code(payload, policies: dict, mock: bool, wo_id: str) -> dict:
+    if isinstance(payload, dict):
+        summary = payload.get("title", "generated module")
+        context_dict = payload
+    else:
+        summary = payload.summary
+        context_dict = asdict(payload)
+        
     prompt = (
         "You are a developer. Write a single self-contained Python module implementing "
-        "ONLY what's in scope below. Include a docstring. Output ONLY code, no prose, no markdown fences.\n\n"
-        f"{json.dumps(brief, indent=2)}"
+        "ONLY what's in scope below. Include a docstring. Output ONLY code, no prose.\n\n"
+        f"{json.dumps(context_dict, indent=2)}"
     )
-    mock_code = (
-        f'"""{brief.get("title", "generated module")}"""\n\n'
-        "import re\n\n"
-        "def validate_email(email: str) -> bool:\n"
-        '    """Return True if `email` looks like a valid address."""\n'
-        "    pattern = r'^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$'\n"
-        "    return bool(re.match(pattern, email))\n"
-    )
-    code = call_model("route_model_by_task", "coding_routine", prompt, policies,
-                       mock=mock, mock_response=mock_code)
+    mock_code = f'"""{summary}"""\n\nimport re\n\ndef generated_func():\n    return True\n'
+    code = call_model("route_model_by_task", "coding_routine", prompt, policies, mock=mock, mock_response=mock_code)
+    import re
     code = re.sub(r"^```(?:python)?|```$", "", code.strip(), flags=re.MULTILINE).strip() + "\n"
 
+    workspace_dir = OUTPUT_DIR / "work_orders" / wo_id
+    workspace_dir.mkdir(parents=True, exist_ok=True)
+    path = workspace_dir / "implementation.py"
+    
     writer = SafeArtifactWriter(Path.cwd(), policies)
-    path = writer.artifact_path_for_title(brief.get("title", "feature"), ".py", str(OUTPUT_DIR))
     writer.write_text(path, code, origin="developer")
     return {"code": code, "path": path}
 
@@ -673,7 +676,6 @@ def review_generated_code(brief: dict, dev_result: dict) -> dict:
         tree = ast.parse(code)
         issues.extend(_detect_ast_review_issues(tree))
     except SyntaxError:
-        # Verify owns syntax validation; Reviewer still runs text checks first.
         pass
 
     issues.extend(_detect_text_review_issues(code))
@@ -696,7 +698,8 @@ def review_generated_code(brief: dict, dev_result: dict) -> dict:
 
 
 def write_review_artifact(path: Path, review: dict, policies: dict | None = None) -> Path:
-    review_path = path.with_name(f"{path.stem}_review.md")
+    workspace_dir = path.parent
+    review_path = workspace_dir / "review.md"
     SafeArtifactWriter(Path.cwd(), policies).write_text(
         review_path,
         "# Review\n\n"
@@ -744,15 +747,11 @@ def append_to_context(entry: str) -> None:
     else:
         writer.write_text(CONTEXT_FILE, f"# PROJECT_CONTEXT.md\n{line}", origin="orchestrator", allow_protected=True)
 
-def _create_work_order_from_brief(wm: WorkOrderManager, brief: dict) -> 'WorkOrder':
-    """Translates the Architect brief into a valid canonical Work Order."""
-    
-    # Validation strictly requires AC IDs to match AC-XXX pattern
+def _create_work_order_from_brief(wm: WorkOrderManager, brief: dict) -> WorkOrder:
     ac_objects = [
         AcceptanceCriterion(id=f"AC-{idx:03d}", description=desc, mandatory=True)
         for idx, desc in enumerate(brief["acceptance_criteria"], start=1)
     ]
-    
     return wm.create(
         title=brief.get("title", "Generated Feature"),
         objective=brief.get("title", "Generated Feature"),
@@ -769,7 +768,7 @@ def run(feature_request: str, mock: bool) -> None:
     else:
         print(">> Mode: live (calling Groq)\n")
 
-    print("[1/5] Architect: compiling scope...")
+    print("[1/8] Architect: compiling scope...")
     scope_result = architect_scope_compile(feature_request, policies, mock)
     if scope_result["decision"]["escalate"]:
         print(f"  STOP [{scope_result['decision']['interrupt_level']}] — escalated to AK: {scope_result['decision']['reason']}")
@@ -777,68 +776,92 @@ def run(feature_request: str, mock: bool) -> None:
         return
     brief = scope_result["brief"]
     
-    # --- ETP Context Initialization ---
+    # --- ETP Context & Artifact Workspace Initialization ---
     wm = WorkOrderManager()
     wo = _create_work_order_from_brief(wm, brief)
+
+    workspace_dir = OUTPUT_DIR / "work_orders" / wo.id
+    workspace_dir.mkdir(parents=True, exist_ok=True)
+    
     etp_tracker = ETPTracker("1.0")
 
-    def execute_handoff(dest_dept: Department, intent: TransferIntent, reason: str, reject_reason: str | None = None):
-        """Helper to evaluate ETP, log to Historian, and update Work Order state if accepted."""
-        
-        # Derive canonical state directly from the Work Order
+    def execute_handoff(dest_dept: Department, intent: TransferIntent, reason: str, reject_reason: str | None = None, deliverable_refs: list[str] | None = None):
         current_dept_str = getattr(wo.department, "value", wo.department)
-        
         tx = etp_tracker.attempt_transfer(
             work_order_id=wo.id,
             current_department=current_dept_str,
             destination_department=dest_dept.value,
             intent=intent,
             reason=reason,
-            reject_reason=reject_reason
+            reject_reason=reject_reason,
+            deliverable_refs=deliverable_refs
         )
-        
         record_etp_transaction(tx.to_dict())
-        
         outcome_str = getattr(tx.outcome, "value", tx.outcome)
         if outcome_str == "ACCEPTED":
-            # Note: WorkOrderManager currently updates the WorkOrder instance in place.
             wm.transfer_department(wo.id, dest_dept, owner=dest_dept.value, changed_by=tx.source_department, reason=reason)
+        return tx
+        
+    execute_handoff(Department.REPOSITORY_INTELLIGENCE, TransferIntent.HANDOFF, "Architect to Repository Intelligence handoff")
 
-    # Transfer: Architect -> Developer
-    execute_handoff(Department.DEVELOPER, TransferIntent.HANDOFF, "Architect to Developer handoff")
+    print("\n[2/8] Repository Intelligence: scanning...")
+    scanner = RepositoryScanner()
+    snapshot = scanner.scan(Path.cwd())
+    profile = RepositoryIntelligence().build_profile(snapshot)
 
-    for log_path in scope_result.get("normalization_logs", []):
-        print(f"  Normalized malformed provider wrapper; raw response logged: {log_path}")
-        append_to_context(f"NORMALIZED at scope_compile: {feature_request} -> {log_path}")
-    if scope_result.get("used_fallback"):
-        print("  Fallback: using deterministic Architect work order after retry failure.")
-        print(f"  Validation error: {scope_result.get('validation_error')}")
-        print(f"  Fallback log: {scope_result.get('fallback_log')}")
-        append_to_context(f"FALLBACK at scope_compile: {feature_request} -> {scope_result.get('fallback_log')}")
-    print(f"  Title: {brief['title']}")
-    print(f"  In scope: {brief['in_scope']}")
-    print(f"  Out of scope: {brief['out_of_scope']}")
+    execute_handoff(Department.FILE_SELECTION, TransferIntent.HANDOFF, "Repository Intelligence to File Selection handoff")
 
-    print("\n[2/5] Developer: generating code...")
+    print("\n[3/8] File Selection: computing relevance...")
+    engine = FileSelectionEngine()
+    selection = engine.select(wo, profile)
+
+    fs_facts = {
+        "zero_files_matched": len(selection.primary_files) == 0,
+        "low_rule_coverage": selection.confidence < 0.5,
+        "conflicting_rules": selection.escalation_reason == "conflicting_rules"
+    }
+    fs_decision = evaluate("file_selection", fs_facts, policies)
+    
+    if fs_decision["escalate"]:
+        print(f"  STOP [{fs_decision['interrupt_level']}] — file_selection escalated: {fs_decision['reason']}")
+        execute_handoff(Department.CONTEXT_BUILDER, TransferIntent.HANDOFF, "File Selection to Context Builder handoff", reject_reason=fs_decision['reason'])
+        return
+
+    execute_handoff(Department.CONTEXT_BUILDER, TransferIntent.HANDOFF, "File Selection to Context Builder handoff")
+
+    print("\n[4/8] Context Builder: packaging artifacts...")
+    builder = ContextBuilder()
     try:
-        dev_result = developer_generate_code(brief, policies, mock)
+        context = builder.build(wo, profile, selection)
+    except Exception as e:
+        print(f"  STOP [error] — Context Builder failed: {str(e)}")
+        execute_handoff(Department.DEVELOPER, TransferIntent.HANDOFF, "Context Builder to Developer handoff", reject_reason=str(e))
+        return
+
+    context_path = workspace_dir / "context.json"
+    writer = SafeArtifactWriter(Path.cwd(), policies)
+    writer.write_text(context_path, json.dumps(asdict(context), indent=2), origin="context_builder", allow_protected=True)
+
+    execute_handoff(Department.DEVELOPER, TransferIntent.HANDOFF, "Context Builder to Developer handoff", deliverable_refs=[str(context_path)])
+
+    print("\n[5/8] Developer: generating code...")
+    try:
+        dev_result = developer_generate_code(context, policies, mock, wo.id)
     except ArtifactWriteError as exc:
         event = exc.event
         print(f"  STOP [approval] — filesystem_safety blocked artifact write: {event['reason']}")
         print(f"  Path: {event['attempted_path']}")
         append_to_context(f"BLOCKED at filesystem_safety: {feature_request} - {event['reason']}")
-        # Attempted handoff to Reviewer is rejected; ownership remains Developer
         execute_handoff(Department.REVIEWER, TransferIntent.REVIEW, "Developer to Reviewer handoff", reject_reason=event['reason'])
         return
     print(f"  Written to: {dev_result['path']}")
 
-    # Transfer: Developer -> Reviewer
     execute_handoff(Department.REVIEWER, TransferIntent.REVIEW, "Developer to Reviewer handoff")
 
-    print("\n[3/5] Reviewer: checking generated code...")
+    print("\n[6/8] Reviewer: checking generated code...")
     review = review_generated_code(brief, dev_result)
-    review_path = write_review_artifact(dev_result["path"], review, policies)
-    record_review(feature_request, brief, dev_result["path"], review_path, review)
+    review_path = write_review_artifact(Path(dev_result["path"]), review, policies)
+    record_review(feature_request, brief, dev_result["path"], str(review_path), review)
     review_decision = evaluate(
         "review_generated_code",
         {"review_failed": review["verdict"] == "FAIL"},
@@ -852,29 +875,29 @@ def run(feature_request: str, mock: bool) -> None:
             line = f":{issue['line']}" if "line" in issue else ""
             print(f"  - {issue['category']}{line}: {issue['message']}")
         append_to_context(f"FAILED at reviewer: {feature_request} - {review['summary']} -> {review_path}")
-        # Attempted handoff to Verify is rejected; ownership remains Reviewer
         execute_handoff(Department.VALIDATOR, TransferIntent.VALIDATE, "Reviewer to Verify handoff", reject_reason=review['summary'])
         return
     print("  Passed — no blocking review issues.")
 
-    # Transfer: Reviewer -> Verify/Validator
     execute_handoff(Department.VALIDATOR, TransferIntent.VALIDATE, "Reviewer to Verify handoff")
 
-    print("\n[4/5] Verify: checking the output is real...")
-    verify_result = verify_output(dev_result["path"], policies)
+    print("\n[7/8] Verify: checking the output is real...")
+    verify_result = verify_output(Path(dev_result["path"]), policies)
+    
+    verify_path = workspace_dir / "verify.json"
+    writer.write_text(verify_path, json.dumps(verify_result, default=str, indent=2), origin="validator", allow_protected=True)
+    
     if not verify_result["passed"]:
         print(f"  STOP [{verify_result['decision']['interrupt_level']}] — escalated to AK: {verify_result['decision']['reason']}")
         print(f"  Facts: {verify_result['facts']}")
         append_to_context(f"ESCALATED at verify_output: {feature_request} — {verify_result['facts']}")
-        # Attempted handoff to Commit/Historian is rejected; ownership remains Validator
         execute_handoff(Department.HISTORIAN, TransferIntent.COMPLETE, "Verify to Commit handoff", reject_reason=verify_result['decision']['reason'])
         return
     print("  Passed — syntax valid, file non-empty.")
 
-    # Transfer: Validator -> Historian (Commit Message Phase)
     execute_handoff(Department.HISTORIAN, TransferIntent.COMPLETE, "Verify to Commit handoff")
 
-    print("\n[5/5] Commit message + log...")
+    print("\n[8/8] Commit message + log...")
     commit_msg = generate_commit_message(brief, policies, mock)
     print(f"  {commit_msg}")
     append_to_context(f"SHIPPED: {commit_msg} -> {dev_result['path']}")

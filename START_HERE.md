@@ -1,96 +1,170 @@
-# START HERE
+# START HERE - AK Labs OS
 
-This file is for future AK Labs OS contributors, including AI coding agents.
-Read it before changing the repository.
+**Current stable release:** v0.4.3  
+**Status:** Production-Calibrated Architecture  
+**Next milestone:** v0.5.0 Implementer MVP
+
+This file is the first document future human engineers and AI engineering
+agents should read after cloning the repository.
 
 ## What AK Labs OS Is
 
-AK Labs OS is an early persistent AI Engineering Organization, not a generic
-coding assistant. Its purpose is to coordinate engineering work through
-departments, policy gates, validation, memory, safe artifact handling, and
-structured Work Orders.
+AK Labs OS is a persistent AI Engineering Organization. It is not a single
+coding assistant. The system is organized as departments with explicit
+contracts, validation gates, policy enforcement, persistent memory, and
+controlled artifact handling.
 
-The Work Order is the canonical engineering object. The planned Engineering
-Transaction Protocol (ETP) is the canonical ownership-transfer mechanism for
-v0.4.2 work; it is not implemented yet.
+The current architecture is frozen at v0.4.3 after the repository intelligence,
+handoff, context, ownership, and validation stabilization work.
 
-Current release readiness is documented in [RELEASE_SUMMARY.md](RELEASE_SUMMARY.md).
+## Current Engineering Pipeline
 
-## Where Architecture Is Documented
+```text
+Architect
+  |
+Repository Intelligence
+  |
+File Selection
+  |
+Context Builder
+  |
+Developer
+  |
+Reviewer
+  |
+Verify
+  |
+Historian
+```
 
-Read these first:
+The Orchestrator coordinates this workflow. It does not own department
+responsibilities, engineering state, policy decisions, validation results, or
+artifact persistence.
 
-1. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - current system architecture.
-2. [docs/ENGINEERING_GUIDE.md](docs/ENGINEERING_GUIDE.md) - how to work in the repo.
-3. [docs/DECISIONS.md](docs/DECISIONS.md) - architectural decisions already made.
-4. [docs/ROADMAP.md](docs/ROADMAP.md) - implemented milestones and planned work.
-5. [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) - branch, validation, and release workflow.
+## Core Subsystems
 
-The root [ARCHITECTURE.md](ARCHITECTURE.md) is the original architecture
-constitution. The `docs/` directory is the canonical onboarding layer.
+- **Architect:** converts user intent into structured engineering direction.
+- **Work Orders:** own task state, lifecycle, contract, acceptance criteria,
+  deliverables, and persistent identity.
+- **Repository Intelligence:** owns repository scanning, profiling, dependency
+  graph metadata, module registry, alias registry, and repository indexes.
+- **File Selection:** owns engineering reasoning about which files matter,
+  selection evidence, confidence breakdowns, and escalation when evidence is
+  insufficient.
+- **Context Builder:** owns `EngineeringContext` packaging from Work Orders,
+  repository profiles, and file-selection results.
+- **Developer:** owns implementation generation.
+- **Reviewer:** owns engineering and security review before verification.
+- **Verify:** owns executable verification after Reviewer approval.
+- **Historian:** owns persistent engineering memory and audit history.
+- **Policy Engine:** owns governance decisions.
+- **Safe Artifact Writer:** owns approved artifact mutation and filesystem
+  safety enforcement.
+- **Validation Harness:** owns independent release validation.
+- **Engineering Transaction Protocol:** owns deterministic ownership transfer
+  between departments.
 
-## Which Branch To Work On
+## Read Before Editing
 
-Use the intended branch model:
+Read these files before making any modification:
 
-- `main`: release-ready code only.
-- `development`: integration branch for completed milestone work.
-- milestone or task branches: short-lived branches from `development`.
-- tagged releases: immutable release points such as `v0.4.1-alpha`.
+- [ARCHITECTURE.md](ARCHITECTURE.md)
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- [docs/ENGINEERING_GUIDE.md](docs/ENGINEERING_GUIDE.md)
+- [docs/DECISIONS.md](docs/DECISIONS.md)
+- [docs/ROADMAP.md](docs/ROADMAP.md)
+- [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)
+- [docs/validation.md](docs/validation.md)
+- [RELEASE_SUMMARY.md](RELEASE_SUMMARY.md)
 
-If the local checkout does not expose Git metadata, still follow this workflow
-conceptually and keep changes scoped to the requested milestone.
+If you are working on handoffs or ownership transfer, also read:
 
-## How To Validate Changes
+- [handoffs/CONTRACT.md](handoffs/CONTRACT.md)
+- [docs/ADR/0001-persistent-work-order-identity.md](docs/ADR/0001-persistent-work-order-identity.md)
+- [docs/ADR/0002-work-order-workspace-ownership.md](docs/ADR/0002-work-order-workspace-ownership.md)
 
-Use the Release Validation Harness:
+## Branch To Work On
 
-```bash
+- `main` is release-ready only.
+- `development` is the normal integration branch for milestone work.
+- Feature and fix branches should branch from `development`.
+- Tagged releases are immutable release points. Current stable release is
+  `v0.4.3`.
+
+Use another branch only when the milestone or repository maintainer explicitly
+requires it.
+
+## Quick Start
+
+```powershell
+python -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt
+copy .env.example .env
+```
+
+Mock pipeline execution:
+
+```powershell
+python orchestrator.py "Build a function that validates an email address" --mock
+```
+
+Release validation:
+
+```powershell
 python -m validation.cli release --deterministic
 python -m validation.cli regression --deterministic
 python -m validation.cli adversarial --deterministic
 python -m validation.cli dod --deterministic
 ```
 
-Reports are written to `reports/latest.json`, `reports/latest.md`, and
-`reports/history/`.
+Validation reports are written to:
 
-For documentation-only changes, do not edit validation logic or runtime code
-to make validation pass.
+```text
+reports/latest.json
+reports/latest.md
+reports/history/
+```
 
-## Architecture Freeze Policy
+## Validation Status
 
-Architecture is approved before implementation.
+v0.4.3 is documented as GREEN after the release validation campaign covering:
 
-Implementation follows the approved architecture. It must not silently redefine
-department responsibilities, Work Order ownership, policy authority, validation
-authority, Historian audit boundaries, or filesystem safety rules.
+- filesystem safety
+- reviewer regression and adversarial cases
+- architect normalization and retry fallback
+- historian persistence
+- UTF-8 artifact handling
+- verify gating
+- project context logging
+- Work Orders
+- Engineering Transaction Protocol integration
+- Repository Intelligence
+- File Selection
+- Context Builder
 
-Architectural changes require an ADR in [docs/DECISIONS.md](docs/DECISIONS.md).
-Implementation-only milestones may not introduce new architecture unless the
-milestone explicitly says so.
+Do not weaken validation to make a release pass. Fix the defect or document the
+blocker.
 
-## Files To Read Before Modifying Behavior
+## Repository Layout To Know
 
-Read these before changing runtime, validation, policy, or Work Order behavior:
+```text
+repository_intelligence/   scanning, profiling, dependency graph, indexes
+file_selection/            file-selection reasoning and evidence
+context_builder/           EngineeringContext packaging
+work_orders/               Work Order domain model and persistent identity
+etp/                       Engineering Transaction Protocol
+validation/                release validation harness and suites
+reporters/                 JSON, Markdown, and release-summary reporters
+reports/                   generated validation reports
+output/
+  work_orders/
+    WO-000001/             canonical Work Order workspace layout
+docs/                      onboarding, roadmap, decisions, validation docs
+```
 
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-- [docs/DECISIONS.md](docs/DECISIONS.md)
-- [RELEASE_SUMMARY.md](RELEASE_SUMMARY.md)
-- [policies.yaml](policies.yaml)
-- [capabilities.yaml](capabilities.yaml)
-- [orchestrator.py](orchestrator.py)
-- [policy_engine.py](policy_engine.py)
-- [historian.py](historian.py)
-- [safe_artifact_writer.py](safe_artifact_writer.py)
-- [work_orders/schema.py](work_orders/schema.py)
-- [validation/registry.py](validation/registry.py)
+## Architecture Preservation Rule
 
-## Preservation Rule
-
-Architectural intent must be preserved unless the active milestone explicitly
-requires a change.
-
-Do not redesign departments, policies, validation, filesystem safety, Work
-Orders, or runtime flow as a side effect of another task. If a change would
-alter architectural intent, document the reason in [docs/DECISIONS.md](docs/DECISIONS.md).
+Architectural intent must be preserved unless a milestone explicitly requires a
+change. Do not silently move ownership between subsystems. If a milestone
+requires architecture to change, record the decision in an ADR and update the
+canonical architecture documentation.

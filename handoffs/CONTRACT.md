@@ -80,8 +80,8 @@ There is no responsibility overlap.
 | Correctness and release validation | Validation Harness |
 | Governance and escalation | Policy Engine |
 | Artifact persistence | Safe Artifact Writer |
-| Repository knowledge | Repository Intelligence, planned |
-| Context construction | Context Builder, planned |
+| Repository knowledge | Repository Intelligence |
+| Context construction | Context Builder |
 
 Rules:
 
@@ -233,7 +233,7 @@ Evidence rules:
 
 ## Validation Expectations
 
-Future validation must prove:
+Validation must prove:
 
 - one Work Order per transaction
 - exactly one active owner after every accepted transaction
